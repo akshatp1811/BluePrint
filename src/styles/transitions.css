@@ -1,0 +1,156 @@
+/* ==========================================================================
+   BLUE PRINT - Global Animation & Transition System
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Page Transition Overlay
+   -------------------------------------------------------------------------- */
+.transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-primary);
+  z-index: 9999;
+  transform: translateY(100%);
+  pointer-events: none;
+}
+
+/* Page Transition Animations */
+.transition-overlay.animating-out {
+  animation: slideOutUp 0.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.transition-overlay.animating-in {
+  animation: slideInUp 0.6s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes slideInUp {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes slideOutUp {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Scroll Triggered Reveal Animations
+   -------------------------------------------------------------------------- */
+.reveal-fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s var(--transition-curve),
+              transform 0.8s var(--transition-curve);
+}
+
+.reveal-fade-up.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Clip-path Image Reveal */
+.reveal-image-clip {
+  clip-path: inset(0 100% 0 0); /* Hidden completely to the right */
+  transition: clip-path 1.2s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.reveal-image-clip.revealed {
+  clip-path: inset(0 0 0 0); /* Fully revealed */
+}
+
+/* Image Parallax */
+.parallax-image {
+  transform: translateY(0);
+  transition: transform 0.1s linear;
+}
+
+/* Staggered Delay Utilities */
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+.delay-5 { transition-delay: 0.5s; }
+
+/* --------------------------------------------------------------------------
+   Hero Entrance Animations (Page Load)
+   -------------------------------------------------------------------------- */
+.hero-bg-reveal {
+  animation: scaleDownBG 1.4s var(--transition-curve) forwards;
+}
+
+.hero-title-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUpIn 0.8s 0.3s var(--transition-curve) forwards;
+}
+
+.hero-subtitle-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUpIn 0.8s 0.45s var(--transition-curve) forwards;
+}
+
+.hero-desc-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUpIn 0.8s 0.6s var(--transition-curve) forwards;
+}
+
+.hero-btn-reveal {
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeUpIn 0.8s 0.75s var(--transition-curve) forwards;
+}
+
+.hero-meta-reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUpIn 0.8s 0.9s var(--transition-curve) forwards;
+}
+
+@keyframes scaleDownBG {
+  from {
+    transform: scale(1.15);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes fadeUpIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--y-start, 25px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Simple fade reveal for dynamic grids (e.g. category filters) */
+.fade-in-item {
+  animation: fadeInItem 0.4s var(--transition-curve) forwards;
+}
+
+@keyframes fadeInItem {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
