@@ -5,6 +5,7 @@
 import { projects } from '../data/content.js';
 import { setupScrollReveals } from '../app.js';
 import { Lightbox } from '../components/Lightbox.js';
+import { ImageComparisonSlider } from '../components/ImageComparisonSlider.js';
 
 export const ProjectDetailView = {
   async render(params) {
@@ -89,6 +90,36 @@ export const ProjectDetailView = {
         `;
       })
       .join('');
+
+    // Comparison Slider markup if project has comparison defined
+    let comparisonMarkup = '';
+    if (project.comparison) {
+      const sliderHtml = ImageComparisonSlider.render({
+        id: `project-comparison-${project.id}`,
+        beforeImage: project.comparison.beforeImage,
+        afterImage: project.comparison.afterImage,
+        beforeAlt: project.comparison.beforeAlt,
+        afterAlt: project.comparison.afterAlt,
+        beforeLabel: project.comparison.beforeLabel || 'BEFORE',
+        afterLabel: project.comparison.afterLabel || 'AFTER',
+        caption: project.comparison.caption
+      });
+
+      comparisonMarkup = `
+        <section class="transformation-section">
+          <div class="container">
+            <div class="reveal-fade-up" style="max-width: 600px; margin-bottom: var(--space-xl);">
+              <span class="label-mono">Transformation</span>
+              <h2>Construction vs Completion</h2>
+              <p class="section-subtitle">Slide to compare the active building phase with the realized architectural volume.</p>
+            </div>
+            <div class="reveal-fade-up delay-1">
+              ${sliderHtml}
+            </div>
+          </div>
+        </section>
+      `;
+    }
 
     // Story Editorial rows (alternating text left/right and image left/right)
     const storyMarkup = project.story
@@ -183,6 +214,9 @@ export const ProjectDetailView = {
         </div>
       </section>
 
+      <!-- Before / After Construction Comparison Section -->
+      ${comparisonMarkup}
+
       <!-- Next Project Link Anchor -->
       <section class="next-project-section" id="next-project-btn" data-next-id="${nextProject.id}">
         <img src="${nextProject.heroImage}" alt="${nextProject.title}" class="next-project-bg">
@@ -243,7 +277,12 @@ export const ProjectDetailView = {
       });
     });
 
-    // 5. Navigate to Next Project click listener
+    // 5. Initialize comparison slider if present
+    if (project.comparison) {
+      ImageComparisonSlider.init(`#project-comparison-${project.id}`);
+    }
+
+    // 6. Navigate to Next Project click listener
     const nextBtn = document.getElementById('next-project-btn');
     if (nextBtn) {
       nextBtn.addEventListener('click', () => {

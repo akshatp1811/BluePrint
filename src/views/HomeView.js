@@ -2,8 +2,9 @@
    BLUE PRINT - Home Page View
    ========================================================================== */
 
-import { projects, statistics, designPhilosophy, processSteps, studioInfo } from '../data/content.js';
+import { projects, statistics, designPhilosophy, processSteps, studioInfo, constructionComparison } from '../data/content.js';
 import { setupScrollReveals } from '../app.js';
+import { ImageComparisonSlider } from '../components/ImageComparisonSlider.js';
 
 export const HomeView = {
   async render() {
@@ -68,6 +69,19 @@ export const HomeView = {
         `;
       })
       .join('');
+
+    const comparisonMarkup = ImageComparisonSlider.render({
+      id: 'home-construction-slider',
+      beforeImage: constructionComparison.beforeImage,
+      afterImage: constructionComparison.afterImage,
+      beforeAlt: constructionComparison.beforeAlt,
+      afterAlt: constructionComparison.afterAlt,
+      beforeLabel: constructionComparison.beforeLabel,
+      afterLabel: constructionComparison.afterLabel,
+      initialPosition: 50,
+      aspectRatio: '16 / 9',
+      caption: constructionComparison.caption
+    });
 
     return `
       <!-- Hero Section -->
@@ -179,6 +193,20 @@ export const HomeView = {
           <div class="process-timeline reveal-fade-up delay-1">
             <div class="process-timeline-progress" id="timeline-progress-bar"></div>
             ${processMarkup}
+          </div>
+        </div>
+      </section>
+
+      <!-- Construction Transformation Section (Interactive Comparison Slider) -->
+      <section class="transformation-section">
+        <div class="container">
+          <div class="reveal-fade-up" style="text-align: center; max-width: 680px; margin: 0 auto var(--space-xl);">
+            <span class="label-mono">${constructionComparison.tagline}</span>
+            <h2>${constructionComparison.title}</h2>
+            <p class="section-subtitle">${constructionComparison.description}</p>
+          </div>
+          <div class="reveal-fade-up delay-1">
+            ${comparisonMarkup}
           </div>
         </div>
       </section>
@@ -315,5 +343,8 @@ export const HomeView = {
 
       observer.observe(processSection);
     }
+
+    // 6. Setup Interactive Before/After Construction Slider
+    ImageComparisonSlider.init('#home-construction-slider');
   }
 };

@@ -31,6 +31,19 @@ export const studioInfo = {
   }
 };
 
+export const constructionComparison = {
+  tagline: 'Site Transformation',
+  title: 'From Groundwork to Living Space',
+  description: 'Experience the architectural evolution as raw structural masonry, scaffolding, and concrete foundations transform into a refined, light-filled contemporary sanctuary.',
+  beforeImage: '/assets/projects/construction_before.jpg',
+  afterImage: '/assets/projects/construction_after.jpg',
+  beforeAlt: 'Living space during active construction phase with exposed masonry and scaffolding',
+  afterAlt: 'Completed luxury interior living room with bespoke joinery, art, and natural lighting',
+  beforeLabel: 'BEFORE',
+  afterLabel: 'AFTER',
+  caption: 'Slide or drag horizontally to compare the raw construction phase with the completed living volume.'
+};
+
 export const statistics = [
   { value: 50, label: 'Projects Delivered' },
   { value: 35, label: 'Happy Clients' },
@@ -170,6 +183,13 @@ export const projects = [
       { url: '/assets/projects/azure_int.jpg', caption: 'Double-height living space with local teak and raw concrete.' },
       { url: '/assets/projects/azure_detail.jpg', caption: 'Tactile detailing showing board-formed concrete texture and shadow lines.' }
     ],
+    comparison: {
+      beforeImage: '/assets/projects/construction_before.jpg',
+      afterImage: '/assets/projects/construction_after.jpg',
+      beforeAlt: 'Azure Residence during active construction',
+      afterAlt: 'Azure Residence completed living volume',
+      caption: 'Slide to compare the active structural construction phase with the completed living space.'
+    },
     drawings: [
       { name: 'Ground Floor Plan', url: '/assets/projects/azure_drawing_floor.jpg' },
       { name: 'Building Elevation', url: '/assets/projects/azure_drawing_elevation.jpg' }
