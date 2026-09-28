@@ -3,132 +3,74 @@
    ========================================================================== */
 
 export const studioInfo = {
-  name: 'BLUE PRINT',
-  tagline: 'Architecture that shapes the way we live.',
-  logo: {
-    text: 'BLUE PRINT',
-    highlight: 'PRINT'
-  },
+  name: 'blueprint design studio',
+  tagline: 'an architecture and interiors studio in civil lines, working from first sketch to final handover',
+  headline: 'spaces drawn with intention, built with precision',
+  locationLabel: 'ARCHITECTURE AND INTERIORS, PRAYAGRAJ',
+  subLocation: 'civil lines, prayagraj',
   contact: {
-    address: '42 Park Street, Bengaluru, Karnataka, India – 560001',
+    address: 'Civil Lines, Prayagraj, Uttar Pradesh, India',
     phone: '+91 98765 43210',
-    email: 'hello@blueprintstudio.com',
-    hours: 'Monday – Friday, 9:00 AM – 6:00 PM'
+    email: 'hello@blueprintstudio.in',
+    hours: 'Monday – Saturday, 10:00 AM – 7:00 PM'
   },
   socials: [
     { name: 'Instagram', url: '#' },
     { name: 'LinkedIn', url: '#' },
-    { name: 'Pinterest', url: '#' },
-    { name: 'Vimeo', url: '#' }
+    { name: 'Pinterest', url: '#' }
   ],
+  quote: {
+    text: '"the team understood exactly what we wanted before we could even explain it fully"',
+    author: 'client, tiwari residence'
+  },
   aboutStory: {
-    heading: 'Architecture with purpose.',
+    heading: 'precision in every line.',
+    shortIntro: 'Blueprint Design Studio is an architecture and interiors practice based in Civil Lines, Prayagraj. We focus on restrained, context-aware spaces that unite structural clarity with tactile warmth.',
     paragraphs: [
-      'Founded with a belief that great architecture begins with understanding people and place, BLUE PRINT has grown into a multidisciplinary architecture and design studio working across residential, commercial, hospitality, and interior projects.',
-      'Our approach combines creative thinking with technical precision to create spaces that are functional, timeless, and deeply connected to their surroundings. We believe that architecture has the power to enrich lives, foster community, and shape a sustainable future.',
-      'Each project in our studio is treated as a unique response to context, material, light, and client aspirations. Rather than adhering to a single signature style, we let the site and the programmatic requirements guide our forms, resulting in bespoke spaces that feel natural and authentic.'
+      'We believe architecture should be quiet, functional, and deeply intentional. Operating from Civil Lines, Prayagraj, our studio handles projects from the first conceptual sketch through detailing, structural engineering, and final turnkey handover.',
+      'Our practice balances spatial clarity with crafted materials—ensuring every built space serves both functional requirements and quiet elegance.'
     ]
   }
 };
 
-export const constructionComparison = {
-  tagline: 'Site Transformation',
-  title: 'From Groundwork to Living Space',
-  description: 'Experience the architectural evolution as raw structural masonry, scaffolding, and concrete foundations transform into a refined, light-filled contemporary sanctuary.',
-  beforeImage: '/assets/projects/construction_before.jpg',
-  afterImage: '/assets/projects/construction_after.jpg',
-  beforeAlt: 'Living space during active construction phase with exposed masonry and scaffolding',
-  afterAlt: 'Completed luxury interior living room with bespoke joinery, art, and natural lighting',
-  beforeLabel: 'BEFORE',
-  afterLabel: 'AFTER',
-  caption: 'Slide or drag horizontally to compare the raw construction phase with the completed living volume.'
-};
-
-export const statistics = [
-  { value: 50, label: 'Projects Delivered' },
-  { value: 35, label: 'Happy Clients' },
-  { value: 10, label: 'Years of Experience' },
-  { value: 15, label: 'Awards & Recognitions' }
-];
-
-export const designPhilosophy = [
+export const services = [
   {
     num: '01',
-    title: 'Context',
-    desc: 'Architecture that responds to its surroundings, respecting native landscapes, site topography, and local climate conditions.'
+    title: 'architecture',
+    desc: 'structural and spatial design for new builds and renovations'
   },
   {
     num: '02',
-    title: 'Function',
-    desc: 'Spaces designed intentionally around how people live, work, and interact, balancing aesthetic elegance with day-to-day utility.'
+    title: 'interiors',
+    desc: 'full-scope interior fit-outs, residential and commercial'
   },
   {
     num: '03',
-    title: 'Material',
-    desc: 'Thoughtful articulation of materials, textures, raw light, and precise proportions to elicit tactile and emotional responses.'
-  },
-  {
-    num: '04',
-    title: 'Experience',
-    desc: 'Architecture that goes beyond functional shelter, creating memorable human experiences and connecting people with their environment.'
+    title: 'design to build',
+    desc: 'in step with cnc construction for seamless execution'
   }
 ];
 
 export const processSteps = [
   {
     num: '01',
-    title: 'Discover',
-    desc: 'Deep dive into client goals, site context, environmental constraints, and overall project vision.'
+    title: 'consultation',
+    desc: 'brief definition, spatial review, and budget feasibility'
   },
   {
     num: '02',
-    title: 'Concept',
-    desc: 'Translating research and goals into initial sketches, massing studies, spatial volumes, and structural strategies.'
+    title: 'design and planning',
+    desc: 'architectural drawings, material palettes, and 3D volumes'
   },
   {
     num: '03',
-    title: 'Design',
-    desc: 'Refining the concept with full technical drawings, precise material specifications, interior details, and photorealistic 3D renders.'
+    title: 'execution',
+    desc: 'on-site coordination, precision joinery, and structural builds'
   },
   {
     num: '04',
-    title: 'Build',
-    desc: 'Collaborating closely with builders and craftsmen to execute the design with precise architectural alignment.'
-  }
-];
-
-export const services = [
-  {
-    title: 'Architectural Design',
-    desc: 'Designing sustainable, contemporary buildings that form dialogs with their environment.'
-  },
-  {
-    title: 'Interior Design',
-    desc: 'Creating bespoke interior volumes with attention to tactile materials, light, and custom furniture.'
-  },
-  {
-    title: 'Residential Architecture',
-    desc: 'Crafting thoughtful, private sanctuaries customized for family life and modern living.'
-  },
-  {
-    title: 'Commercial Architecture',
-    desc: 'Creating highly efficient, flexible commercial spaces, retail storefronts, and office environments.'
-  },
-  {
-    title: 'Hospitality Design',
-    desc: 'Designing boutique hotels, dining environments, and resorts centered on spatial experiences.'
-  },
-  {
-    title: '3D Visualization',
-    desc: 'Producing detailed volumetric concepts, massing diagrams, and high-fidelity rendering details.'
-  },
-  {
-    title: 'Urban Planning',
-    desc: 'Designing sustainable neighborhood frameworks, master plans, and public landscape connections.'
-  },
-  {
-    title: 'Project Management',
-    desc: 'Supervising project development, contractor scheduling, and ensuring drawing details are built accurately.'
+    title: 'handover',
+    desc: 'final finishing inspections, commissioning, and client walk-through'
   }
 ];
 
@@ -167,29 +109,115 @@ export const team = [
 
 export const projects = [
   {
+    id: 'nikhil-yadav-residence',
+    title: 'nikhil yadav residence',
+    tagline: 'minimalist bespoke residential interior in civil lines.',
+    location: 'prayagraj',
+    category: 'interiors',
+    year: '2024',
+    client: 'Nikhil Yadav',
+    area: '3,800 sq ft',
+    status: 'Completed',
+    description: 'A full-scope residential interior in Prayagraj designed around warm natural textures, balanced day lighting, and custom joinery. Minimalist lines and bespoke teak woodwork create a calm, uncluttered domestic sanctuary.',
+    heroImage: '/assets/projects/azure_int.jpg',
+    galleryImages: [
+      { url: '/assets/projects/azure_int.jpg', caption: 'Living area with bespoke timber paneling and natural illumination.' },
+      { url: '/assets/projects/azure_detail.jpg', caption: 'Architectural joinery and tactile materials.' },
+      { url: '/assets/projects/construction_after.jpg', caption: 'Completed living volume.' }
+    ],
+    drawings: [
+      { name: 'Interior Spatial Plan', url: '/assets/projects/azure_drawing_floor.jpg' }
+    ],
+    renders: [
+      { name: 'Concept 3D Render', url: '/assets/projects/azure_render_massing.jpg' }
+    ],
+    story: [
+      {
+        heading: 'The Brief',
+        text: 'The clients wanted a serene, unpretentious living environment with ample breathing space and concealed storage to eliminate daily clutter.',
+        image: '/assets/projects/azure_story_idea.jpg'
+      }
+    ]
+  },
+  {
+    id: 'tiwari-residence',
+    title: 'tiwari residence',
+    tagline: 'refined spatial renovation celebrating soft daylight and natural stone.',
+    location: 'prayagraj',
+    category: 'interiors',
+    year: '2024',
+    client: 'The Tiwari Family',
+    area: '4,200 sq ft',
+    status: 'Completed',
+    description: 'A comprehensive interior fit-out balancing contemporary clarity with domestic warmth. Custom brass details, micro-cement finishes, and muted tones bring understated sophistication to every room.',
+    heroImage: '/assets/projects/construction_after.jpg',
+    galleryImages: [
+      { url: '/assets/projects/construction_after.jpg', caption: 'Main lounge featuring bespoke furniture and curated art.' },
+      { url: '/assets/projects/courtyard_house_int.jpg', caption: 'Courtyard dining space with granite columns.' },
+      { url: '/assets/projects/azure_detail.jpg', caption: 'Detailing of custom cabinetry.' }
+    ],
+    drawings: [
+      { name: 'Floor Layout Plan', url: '/assets/projects/courtyard_house_drawing_site.jpg' }
+    ],
+    renders: [
+      { name: 'Dining Volume Render', url: '/assets/projects/courtyard_house_render_courtyard.jpg' }
+    ],
+    story: [
+      {
+        heading: 'Material Palette',
+        text: 'Muted limestone flooring pairs with white oak and fluted glass partitions, softening direct sunlight while maintaining privacy across living zones.',
+        image: '/assets/projects/courtyard_house_story_idea.jpg'
+      }
+    ]
+  },
+  {
+    id: 'lawyers-office-fit-out',
+    title: "lawyer's office fit-out",
+    tagline: 'precise legal chambers combining acoustic privacy with architectural dignity.',
+    location: 'prayagraj',
+    category: 'commercial',
+    year: '2023',
+    client: 'Senior Advocate Chamber',
+    area: '2,600 sq ft',
+    status: 'Completed',
+    description: 'An executive office interior designed for a prominent legal practice in Prayagraj. Emphasizing acoustic privacy, rich walnut paneling, and architectural lighting, the workspace provides an atmosphere of quiet authority.',
+    heroImage: '/assets/projects/urban_studio_hero.jpg',
+    galleryImages: [
+      { url: '/assets/projects/urban_studio_hero.jpg', caption: 'Principal consultation chamber with acoustic shelving.' },
+      { url: '/assets/projects/urban_studio_int.jpg', caption: 'Associate discussion alcoves and library.' },
+      { url: '/assets/projects/blue_tower_int.jpg', caption: 'Reception gallery and entrance portal.' }
+    ],
+    drawings: [
+      { name: 'Office Layout & Section', url: '/assets/projects/urban_studio_drawing_layout.jpg' }
+    ],
+    renders: [
+      { name: 'Chamber 3D Massing', url: '/assets/projects/urban_studio_render_isometric.jpg' }
+    ],
+    story: [
+      {
+        heading: 'Spatial Organisation',
+        text: 'The plan separates client consultation zones from dense law library archives through acoustic double-glazed walls and bespoke joinery.',
+        image: '/assets/projects/urban_studio_story_idea.jpg'
+      }
+    ]
+  },
+  {
     id: 'azure-residence',
     title: 'Azure Residence',
     tagline: 'A concrete pavilion defined by water, light, and natural landscape.',
-    location: 'Bengaluru, India',
-    category: 'Residential',
+    location: 'bengaluru',
+    category: 'architecture',
     year: '2025',
     client: 'The Somany Family',
     area: '4,500 sq ft',
     status: 'Completed',
-    description: 'Azure Residence is a contemporary sanctuary designed to frame natural landscape and elements. Structured as a concrete pavilion, the home is organized around a private central courtyard and a reflective lap pool. A minimalist material selection of exposed board-formed concrete, locally sourced teak, and expansive structural glazing provides a highly texturized, natural background that is continuously animated by light and shadow.',
+    description: 'Azure Residence is a contemporary sanctuary designed to frame natural landscape and elements. Structured as a concrete pavilion, the home is organized around a private central courtyard and a reflective lap pool.',
     heroImage: '/assets/projects/azure_hero.jpg',
     galleryImages: [
       { url: '/assets/projects/azure_ext.jpg', caption: 'Concrete pavilion and reflective lap pool at dusk.' },
       { url: '/assets/projects/azure_int.jpg', caption: 'Double-height living space with local teak and raw concrete.' },
       { url: '/assets/projects/azure_detail.jpg', caption: 'Tactile detailing showing board-formed concrete texture and shadow lines.' }
     ],
-    comparison: {
-      beforeImage: '/assets/projects/construction_before.jpg',
-      afterImage: '/assets/projects/construction_after.jpg',
-      beforeAlt: 'Azure Residence during active construction',
-      afterAlt: 'Azure Residence completed living volume',
-      caption: 'Slide to compare the active structural construction phase with the completed living space.'
-    },
     drawings: [
       { name: 'Ground Floor Plan', url: '/assets/projects/azure_drawing_floor.jpg' },
       { name: 'Building Elevation', url: '/assets/projects/azure_drawing_elevation.jpg' }
@@ -201,18 +229,8 @@ export const projects = [
     story: [
       {
         heading: 'The Idea',
-        text: 'The core concept behind Azure Residence was to create a dwelling that lives in synergy with the local climate and native vegetation of Bengaluru. Instead of creating a sealed, air-conditioned box, we opened up the volumes to allow fresh breeze, water reflections, and natural shade to drive the interior thermal comfort.',
+        text: 'The core concept behind Azure Residence was to create a dwelling that lives in synergy with the local climate and native vegetation.',
         image: '/assets/projects/azure_story_idea.jpg'
-      },
-      {
-        heading: 'Material & Form',
-        text: 'Formally, the house is composed of stacked structural concrete boxes projecting over a lightweight steel and glass base. Board-formed concrete was selected for its raw honesty and thermal properties. We left the concrete surfaces untouched, showcasing the grain of the wooden shuttering panels, which contrast elegantly with refined glass panels.',
-        image: '/assets/projects/azure_story_material.jpg'
-      },
-      {
-        heading: 'Light & Space',
-        text: 'Light is treated as a core building block. Large structural roof cutouts draw north light deep into the internal volumes. Large glass facades are protected by deep structural concrete cantilevers, protecting internal rooms from direct solar heat gain while maintaining seamless sightlines to the courtyard.',
-        image: '/assets/projects/azure_story_light.jpg'
       }
     ]
   },

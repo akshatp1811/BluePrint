@@ -141,14 +141,23 @@ export const ProjectDetailView = {
       .join('');
 
     return `
-      <!-- Hero Header -->
-      <section class="project-detail-hero">
-        <img src="${project.heroImage}" alt="${project.title}" class="detail-hero-bg hero-bg-reveal">
-        <div class="detail-hero-overlay"></div>
-        <div class="container detail-hero-content">
-          <span class="label-mono hero-title-reveal" style="color: #ffffff; border-bottom: 2px solid var(--color-primary); padding-bottom: 4px;">Featured Project</span>
-          <h1 class="detail-hero-title hero-title-reveal">${project.title}</h1>
-          <p class="detail-hero-meta hero-subtitle-reveal">${project.location} &mdash; ${project.year}</p>
+      <!-- Blueprint Grid Header -->
+      <section class="blueprint-grid-bg projects-blueprint-hero">
+        <div class="container projects-hero-inner">
+          <div class="projects-pill reveal-fade-up">${project.category} &mdash; ${project.location}</div>
+          <h1 class="projects-title font-serif reveal-fade-up">${project.title}</h1>
+          <p class="projects-subtitle reveal-fade-up">${project.tagline || ''}</p>
+        </div>
+      </section>
+
+      <div class="scale-ruler-bar" aria-hidden="true"></div>
+
+      <!-- Main Project Image Feature -->
+      <section class="detail-main-image-section">
+        <div class="container">
+          <div class="detail-main-image-wrap reveal-fade-up">
+            <img src="${project.heroImage}" alt="${project.title}" class="detail-main-img">
+          </div>
         </div>
       </section>
 

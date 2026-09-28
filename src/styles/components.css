@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   Navbar Styling
+   Navbar Styling - Aligned with Architectural Reference
    -------------------------------------------------------------------------- */
 .navbar {
   position: fixed;
@@ -11,23 +11,22 @@
   left: 0;
   width: 100%;
   height: var(--header-height-desktop);
-  background-color: transparent;
+  background-color: var(--color-bg);
   display: flex;
   align-items: center;
   z-index: 1000;
-  transition: height var(--transition-speed-medium) var(--transition-curve),
-              background-color var(--transition-speed-medium) var(--transition-curve),
-              border-bottom var(--transition-speed-medium) var(--transition-curve),
-              backdrop-filter var(--transition-speed-medium) var(--transition-curve);
+  transition: height var(--transition-speed-fast) var(--transition-curve),
+              border-bottom var(--transition-speed-fast) var(--transition-curve),
+              box-shadow var(--transition-speed-fast) var(--transition-curve);
   border-bottom: 1px solid transparent;
 }
 
 /* Scrolled State */
 .navbar.scrolled {
   height: var(--header-height-scroll);
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background-color: rgba(247, 246, 242, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -38,26 +37,34 @@
   width: 100%;
 }
 
-/* Logo */
+/* Logo: "blueprint design studio" */
 .logo {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
   color: var(--color-text);
-  display: flex;
-  align-items: center;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  text-decoration: none;
 }
 
 .logo-blue {
   color: var(--color-primary);
+  font-weight: 700;
+}
+
+.logo-dark {
+  color: var(--color-text);
+  font-weight: 400;
 }
 
 /* Nav Links Desktop */
 .nav-links {
   display: flex;
   list-style: none;
-  gap: 32px;
+  gap: 28px;
+  align-items: center;
 }
 
 .nav-item {
@@ -65,44 +72,26 @@
 }
 
 .nav-link {
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-transform: lowercase;
   color: var(--color-text);
-  padding: 8px 0;
+  padding: 6px 0;
   display: inline-block;
   cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: color var(--transition-speed-fast) ease;
 }
 
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--color-primary);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform var(--transition-speed-fast) var(--transition-curve);
-}
-
-.nav-link:hover::after,
-.nav-link.active::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
-.nav-link.active {
+.nav-link:hover,
+.nav-link.active,
+.nav-link-contact {
   color: var(--color-primary);
 }
 
-/* Right side CTA */
-.nav-cta {
-  display: flex;
-  align-items: center;
+.nav-link.active {
+  font-weight: 600;
 }
 
 /* Mobile Toggle Hamburger */
@@ -111,8 +100,8 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  width: 30px;
-  height: 24px;
+  width: 28px;
+  height: 20px;
   position: relative;
   z-index: 1002;
 }
@@ -120,30 +109,27 @@
 .mobile-toggle span {
   display: block;
   width: 100%;
-  height: 2px;
+  height: 1.5px;
   background-color: var(--color-text);
   position: absolute;
   left: 0;
   transition: transform var(--transition-speed-fast) var(--transition-curve),
-              opacity var(--transition-speed-fast) var(--transition-curve),
-              background-color var(--transition-speed-fast) var(--transition-curve);
+              opacity var(--transition-speed-fast) var(--transition-curve);
 }
 
 .mobile-toggle span:nth-child(1) { top: 2px; }
-.mobile-toggle span:nth-child(2) { top: 11px; }
-.mobile-toggle span:nth-child(3) { top: 20px; }
+.mobile-toggle span:nth-child(2) { top: 9px; }
+.mobile-toggle span:nth-child(3) { top: 16px; }
 
 /* Active Hamburger state */
 .mobile-toggle.active span:nth-child(1) {
-  transform: translateY(9px) rotate(45deg);
-  background-color: var(--color-text);
+  transform: translateY(7px) rotate(45deg);
 }
 .mobile-toggle.active span:nth-child(2) {
   opacity: 0;
 }
 .mobile-toggle.active span:nth-child(3) {
-  transform: translateY(-9px) rotate(-45deg);
-  background-color: var(--color-text);
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 /* Mobile Navigation Overlay */
@@ -173,20 +159,17 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  margin-bottom: 40px;
+  gap: 20px;
 }
 
 .mobile-nav-link {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-transform: lowercase;
   color: var(--color-text);
-  padding: 10px;
+  padding: 8px 16px;
   display: inline-block;
-  transition: color var(--transition-speed-fast) var(--transition-curve);
 }
 
 .mobile-nav-link.active,
@@ -195,8 +178,8 @@
 }
 
 /* Media Query for Mobile Header Toggle */
-@media (max-width: 900px) {
-  .nav-links, .nav-cta {
+@media (max-width: 820px) {
+  .nav-links {
     display: none;
   }
   .mobile-toggle {
@@ -204,9 +187,60 @@
   }
   .navbar {
     height: var(--header-height-mobile);
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: var(--color-bg);
     border-bottom: 1px solid var(--color-border);
   }
+}
+
+/* --------------------------------------------------------------------------
+   Blueprint Minimal Footer
+   -------------------------------------------------------------------------- */
+.blueprint-footer {
+  background-color: var(--color-footer-bg);
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: #ffffff;
+  padding: 40px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-content-minimal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-studio-name {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #ffffff;
+  text-decoration: none;
+  display: block;
+}
+
+.footer-location-sub {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: #8c93a0;
+  margin-top: 3px;
+  text-transform: lowercase;
+}
+
+.footer-email-link {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color var(--transition-speed-fast) ease;
+}
+
+.footer-email-link:hover {
+  color: #ffffff;
 }
 
 /* --------------------------------------------------------------------------
