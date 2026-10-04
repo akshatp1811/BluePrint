@@ -2,21 +2,28 @@
    BLUE PRINT - Minimal Editorial About Studio View
    ========================================================================== */
 
-import { studioInfo, services } from '../data/content.js';
+import { studioInfo, team } from '../data/content.js';
 import { setupScrollReveals } from '../app.js';
 
 export const AboutView = {
   async render() {
-    const servicesMarkup = services
-      .map(
-        svc => `
-        <div class="service-col reveal-fade-up">
-          <span class="service-num">${svc.num}</span>
-          <h3 class="service-title">${svc.title}</h3>
-          <p class="service-desc">${svc.desc}</p>
-        </div>
-      `
-      )
+    // Four slots for four core team members as requested
+    const coreTeam = team.slice(0, 4);
+
+    const teamCardsMarkup = coreTeam
+      .map(member => {
+        return `
+          <div class="team-card reveal-fade-up">
+            <div class="team-image-wrapper">
+              <img src="${member.image}" alt="${member.name}" class="team-member-img" loading="lazy">
+            </div>
+            <div class="team-card-info">
+              <h3 class="team-member-name">${member.name}</h3>
+              <p class="team-member-role">${member.role}</p>
+            </div>
+          </div>
+        `;
+      })
       .join('');
 
     return `
@@ -32,6 +39,22 @@ export const AboutView = {
       </section>
 
       <div class="scale-ruler-bar" aria-hidden="true"></div>
+
+      <!-- Meet Our Team Section (First with 4 slots for 4 team members) -->
+      <section class="blueprint-team-section">
+        <div class="container">
+          <div class="team-section-header reveal-fade-up">
+            <span class="label-mono">Our Team</span>
+            <h2 class="team-section-title font-serif">Meet Our Team</h2>
+            <p class="team-section-subtitle">
+              Our multidisciplinary studio brings together architectural clarity, structural precision, and tailored interior craftsmanship.
+            </p>
+          </div>
+          <div class="blueprint-team-grid">
+            ${teamCardsMarkup}
+          </div>
+        </div>
+      </section>
 
       <!-- Concise Studio Narrative -->
       <section class="blueprint-about-story-section">
@@ -50,18 +73,6 @@ export const AboutView = {
         </div>
       </section>
 
-      <!-- Services Grid -->
-      <section class="blueprint-services-section" style="padding-top: 0;">
-        <div class="container">
-          <div class="work-section-header reveal-fade-up" style="margin-bottom: var(--space-lg);">
-            <h2 class="work-section-title">Core Disciplines</h2>
-          </div>
-          <div class="services-columns-grid">
-            ${servicesMarkup}
-          </div>
-        </div>
-      </section>
-
       <!-- Minimal Studio Contact CTA -->
       <section class="blueprint-quote-section" style="border-top: 1px solid var(--color-border);">
         <div class="container quote-container reveal-fade-up">
@@ -71,7 +82,10 @@ export const AboutView = {
           <p style="color: var(--color-text-muted); margin-bottom: 24px;">
             Connect with our Civil Lines office in Prayagraj.
           </p>
-          <a href="/contact" data-nav="contact" class="btn btn-blueprint">Get in Touch</a>
+          <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+            <a href="/contact" data-nav="contact" class="btn btn-blueprint">Get in Touch</a>
+            <a href="/contact" data-nav="contact" class="btn-build-with-us">Build with Us</a>
+          </div>
         </div>
       </section>
     `;
@@ -80,12 +94,14 @@ export const AboutView = {
   init(params, router) {
     setupScrollReveals();
 
-    const ctaLink = document.querySelector('.blueprint-about-story-section a[data-nav], .blueprint-quote-section a[data-nav]');
-    if (ctaLink) {
-      ctaLink.addEventListener('click', (e) => {
+    const ctaLinks = document.querySelectorAll('.blueprint-about-story-section a[data-nav], .blueprint-quote-section a[data-nav]');
+    ctaLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
         e.preventDefault();
-        router.navigate('/contact', 'contact');
+        const routeName = link.getAttribute('data-nav') || 'contact';
+        const path = link.getAttribute('href') || '/contact';
+        router.navigate(path, routeName);
       });
-    }
+    });
   }
 };

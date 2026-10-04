@@ -3,7 +3,7 @@
    Modeled precisely after reference blueprint design language
    ========================================================================== */
 
-import { projects, services, studioInfo, constructionComparison } from '../data/content.js';
+import { projects, studioInfo, constructionComparison } from '../data/content.js';
 import { setupScrollReveals } from '../app.js';
 import { ImageComparisonSlider } from '../components/ImageComparisonSlider.js';
 
@@ -25,18 +25,6 @@ export const HomeView = {
               <div class="blueprint-card-location">${project.location}</div>
             </div>
           </article>
-        `;
-      })
-      .join('');
-
-    const servicesMarkup = services
-      .map(service => {
-        return `
-          <div class="service-col reveal-fade-up">
-            <span class="service-num">${service.num}</span>
-            <h3 class="service-title">${service.title}</h3>
-            <p class="service-desc">${service.desc}</p>
-          </div>
         `;
       })
       .join('');
@@ -73,21 +61,13 @@ export const HomeView = {
 
           <div class="hero-cta-wrap reveal-fade-up">
             <a href="/projects" data-nav="projects" class="btn btn-blueprint">View Our Work</a>
+            <a href="/contact" data-nav="contact" class="btn-build-with-us">Build with Us</a>
           </div>
         </div>
       </section>
 
       <!-- Architectural Scale Ruler / Tick Marks Bar -->
       <div class="scale-ruler-bar" aria-hidden="true"></div>
-
-      <!-- Services Section (3 Clean Disciplines with Vertical Dividers) -->
-      <section class="blueprint-services-section" id="services">
-        <div class="container">
-          <div class="services-columns-grid">
-            ${servicesMarkup}
-          </div>
-        </div>
-      </section>
 
       <!-- Selected Work Section -->
       <section class="blueprint-work-section" id="portfolio">

@@ -177,9 +177,49 @@
   color: var(--color-primary);
 }
 
+.mobile-cta-wrap {
+  margin-top: 28px;
+}
+
+/* Right Side CTA */
+.nav-cta {
+  display: flex;
+  align-items: center;
+}
+
+/* "Build with Us" rectangular outlined button (matches reference screenshot) */
+.btn-build-with-us {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #111111;
+  background-color: transparent;
+  border: 1.5px solid #111111;
+  border-radius: 0px;
+  padding: 9px 22px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition-speed-fast) ease;
+  line-height: 1.2;
+  box-sizing: border-box;
+}
+
+.btn-build-with-us:hover {
+  background-color: #111111;
+  color: #ffffff;
+  border-color: #111111;
+  transform: translateY(-1px);
+}
+
 /* Media Query for Mobile Header Toggle */
 @media (max-width: 820px) {
-  .nav-links {
+  .nav-links,
+  .nav-cta {
     display: none;
   }
   .mobile-toggle {

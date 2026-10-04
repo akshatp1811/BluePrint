@@ -24,11 +24,7 @@ export const ProjectDetailView = {
     }
 
     const project = projects[projectIndex];
-    
-    // Determine the next project for the bottom navigation link
-    const nextProjectIndex = (projectIndex + 1) % projects.length;
-    const nextProject = projects[nextProjectIndex];
-
+ 
     // Assemble Specs Grid
     const specs = [
       { label: 'Client', val: project.client },
@@ -225,16 +221,6 @@ export const ProjectDetailView = {
 
       <!-- Before / After Construction Comparison Section -->
       ${comparisonMarkup}
-
-      <!-- Next Project Link Anchor -->
-      <section class="next-project-section" id="next-project-btn" data-next-id="${nextProject.id}">
-        <img src="${nextProject.heroImage}" alt="${nextProject.title}" class="next-project-bg">
-        <div class="container next-project-content">
-          <span class="next-project-label">Next Project &rarr;</span>
-          <h2 class="next-project-title">${nextProject.title}</h2>
-          <div class="next-project-arrow">&darr;</div>
-        </div>
-      </section>
     `;
   },
 
@@ -289,15 +275,6 @@ export const ProjectDetailView = {
     // 5. Initialize comparison slider if present
     if (project.comparison) {
       ImageComparisonSlider.init(`#project-comparison-${project.id}`);
-    }
-
-    // 6. Navigate to Next Project click listener
-    const nextBtn = document.getElementById('next-project-btn');
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        const nextId = nextBtn.getAttribute('data-next-id');
-        router.navigate(`/project/${nextId}`, 'projects');
-      });
     }
   }
 };

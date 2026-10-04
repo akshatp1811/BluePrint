@@ -9,7 +9,6 @@ export const Navbar = {
     const links = [
       { id: 'home', label: 'Home', path: '/' },
       { id: 'about', label: 'About', path: '/about' },
-      { id: 'services', label: 'Services', path: '/#services' },
       { id: 'projects', label: 'Projects', path: '/projects' },
       { id: 'contact', label: 'Contact', path: '/contact' }
     ];
@@ -51,6 +50,11 @@ export const Navbar = {
             ${desktopLinksMarkup}
           </ul>
 
+          <!-- Right side CTA Button -->
+          <div class="nav-cta">
+            <a href="/contact" data-nav="contact" class="btn-build-with-us">Build with Us</a>
+          </div>
+
           <!-- Mobile Toggle Hamburger -->
           <button class="mobile-toggle" id="mobile-menu-toggle" aria-label="Toggle Menu" aria-expanded="false">
             <span></span>
@@ -64,6 +68,9 @@ export const Navbar = {
           <ul class="mobile-nav-list">
             ${mobileLinksMarkup}
           </ul>
+          <div class="mobile-cta-wrap">
+            <a href="/contact" data-nav="contact" class="btn-build-with-us">Build with Us</a>
+          </div>
         </div>
       </nav>
     `;
