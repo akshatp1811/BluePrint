@@ -24,7 +24,7 @@ export const AboutView = {
       <section class="blueprint-grid-bg projects-blueprint-hero">
         <div class="container projects-hero-inner">
           <div class="projects-pill reveal-fade-up">${studioInfo.locationLabel}</div>
-          <h1 class="projects-title font-serif reveal-fade-up">about the studio</h1>
+          <h1 class="projects-title font-serif reveal-fade-up">About the Studio</h1>
           <p class="projects-subtitle reveal-fade-up">
             ${studioInfo.tagline}
           </p>
@@ -38,7 +38,7 @@ export const AboutView = {
         <div class="container about-minimal-container">
           <div class="about-quote-box reveal-fade-up">
             <h2 class="about-lead-headline font-serif">
-              quiet, functional, and deeply intentional spaces.
+              Quiet, functional, and deeply intentional spaces.
             </h2>
             <p class="about-lead-body">
               ${studioInfo.aboutStory.shortIntro}
@@ -54,7 +54,7 @@ export const AboutView = {
       <section class="blueprint-services-section" style="padding-top: 0;">
         <div class="container">
           <div class="work-section-header reveal-fade-up" style="margin-bottom: var(--space-lg);">
-            <h2 class="work-section-title">core disciplines</h2>
+            <h2 class="work-section-title">Core Disciplines</h2>
           </div>
           <div class="services-columns-grid">
             ${servicesMarkup}
@@ -66,12 +66,12 @@ export const AboutView = {
       <section class="blueprint-quote-section" style="border-top: 1px solid var(--color-border);">
         <div class="container quote-container reveal-fade-up">
           <h3 style="font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 12px; font-weight: 400;">
-            ready to discuss your site or renovation?
+            Ready to discuss your site or renovation?
           </h3>
           <p style="color: var(--color-text-muted); margin-bottom: 24px;">
-            connect with our civil lines office in prayagraj.
+            Connect with our Civil Lines office in Prayagraj.
           </p>
-          <a href="/contact" data-nav="contact" class="btn btn-blueprint">get in touch</a>
+          <a href="/contact" data-nav="contact" class="btn btn-blueprint">Get in Touch</a>
         </div>
       </section>
     `;

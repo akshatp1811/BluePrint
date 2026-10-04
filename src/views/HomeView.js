@@ -3,8 +3,9 @@
    Modeled precisely after reference blueprint design language
    ========================================================================== */
 
-import { projects, services, processSteps, studioInfo } from '../data/content.js';
+import { projects, services, studioInfo, constructionComparison } from '../data/content.js';
 import { setupScrollReveals } from '../app.js';
+import { ImageComparisonSlider } from '../components/ImageComparisonSlider.js';
 
 export const HomeView = {
   async render() {
@@ -40,16 +41,18 @@ export const HomeView = {
       })
       .join('');
 
-    const processMarkup = processSteps
-      .map(step => {
-        return `
-          <div class="process-col reveal-fade-up">
-            <span class="process-num">${step.num}</span>
-            <div class="process-name">${step.title}</div>
-          </div>
-        `;
-      })
-      .join('');
+    const comparisonMarkup = ImageComparisonSlider.render({
+      id: 'home-construction-slider',
+      beforeImage: constructionComparison.beforeImage,
+      afterImage: constructionComparison.afterImage,
+      beforeAlt: constructionComparison.beforeAlt,
+      afterAlt: constructionComparison.afterAlt,
+      beforeLabel: constructionComparison.beforeLabel,
+      afterLabel: constructionComparison.afterLabel,
+      initialPosition: 50,
+      aspectRatio: '16 / 9',
+      caption: constructionComparison.caption
+    });
 
     return `
       <!-- Hero Section (Clean blueprint drafting layout, no large photo) -->
@@ -60,7 +63,7 @@ export const HomeView = {
           </div>
           
           <h1 class="hero-headline font-serif reveal-fade-up">
-            spaces drawn with intention,<br>
+            Spaces drawn with intention,<br>
             <span class="highlight-blue">built</span> with precision
           </h1>
 
@@ -69,7 +72,7 @@ export const HomeView = {
           </p>
 
           <div class="hero-cta-wrap reveal-fade-up">
-            <a href="/projects" data-nav="projects" class="btn btn-blueprint">view our work</a>
+            <a href="/projects" data-nav="projects" class="btn btn-blueprint">View Our Work</a>
           </div>
         </div>
       </section>
@@ -90,8 +93,8 @@ export const HomeView = {
       <section class="blueprint-work-section" id="portfolio">
         <div class="container">
           <div class="work-section-header reveal-fade-up">
-            <h2 class="work-section-title">selected work</h2>
-            <a href="/projects" data-nav="projects" class="work-view-all">view all projects</a>
+            <h2 class="work-section-title">Selected Work</h2>
+            <a href="/projects" data-nav="projects" class="work-view-all">View All Projects</a>
           </div>
 
           <div class="blueprint-work-grid">
@@ -100,12 +103,16 @@ export const HomeView = {
         </div>
       </section>
 
-      <!-- How We Work Section (Signature Navy Blueprint Grid) -->
-      <section class="blueprint-grid-bg blueprint-process-section" id="process">
+      <!-- Construction Transformation Section (Interactive Comparison Slider) -->
+      <section class="transformation-section" id="transformation">
         <div class="container">
-          <h2 class="process-section-title reveal-fade-up">how we work</h2>
-          <div class="process-columns-grid">
-            ${processMarkup}
+          <div class="transformation-header reveal-fade-up">
+            <span class="label-mono">${constructionComparison.tagline}</span>
+            <h2 class="transformation-title">${constructionComparison.title}</h2>
+            <p class="transformation-desc">${constructionComparison.description}</p>
+          </div>
+          <div class="reveal-fade-up delay-1">
+            ${comparisonMarkup}
           </div>
         </div>
       </section>
@@ -137,7 +144,10 @@ export const HomeView = {
       });
     });
 
-    // 3. Bind CTA button and "view all projects" links
+    // 3. Initialize Interactive Comparison Slider
+    ImageComparisonSlider.init('#home-construction-slider');
+
+    // 4. Bind CTA button and "view all projects" links
     const spaLinks = document.querySelectorAll('.blueprint-hero a[data-nav], .blueprint-work-section a[data-nav]');
     spaLinks.forEach(link => {
       link.addEventListener('click', (e) => {

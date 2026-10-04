@@ -12,9 +12,9 @@ export const ContactView = {
       <section class="blueprint-grid-bg projects-blueprint-hero">
         <div class="container projects-hero-inner">
           <div class="projects-pill reveal-fade-up">INQUIRIES</div>
-          <h1 class="projects-title font-serif reveal-fade-up">start a conversation</h1>
+          <h1 class="projects-title font-serif reveal-fade-up">Start a Conversation</h1>
           <p class="projects-subtitle reveal-fade-up">
-            whether planning a new build, interior fit-out, or adaptive renovation, we welcome your project brief.
+            Whether planning a new build, interior fit-out, or adaptive renovation, we welcome your project brief.
           </p>
         </div>
       </section>
@@ -29,43 +29,43 @@ export const ContactView = {
           <div class="contact-info-block reveal-fade-up">
             <div>
               <div class="contact-item-label">STUDIO LOCATION</div>
-              <h3 class="contact-item-title">blueprint design studio</h3>
+              <h3 class="contact-item-title">Blueprint Design Studio</h3>
               <p class="contact-item-desc">${studioInfo.contact.address}</p>
             </div>
 
             <div style="margin-top: var(--space-md);">
               <div class="contact-item-label">DIRECT INQUIRIES</div>
               <p class="contact-item-desc">
-                email: <a href="mailto:${studioInfo.contact.email}" class="text-primary" style="font-weight: 500;">${studioInfo.contact.email}</a><br>
-                phone: <a href="tel:${studioInfo.contact.phone.replace(/\s+/g, '')}" class="text-primary" style="font-weight: 500;">${studioInfo.contact.phone}</a>
+                Email: <a href="mailto:${studioInfo.contact.email}" class="text-primary" style="font-weight: 500;">${studioInfo.contact.email}</a><br>
+                Phone: <a href="tel:${studioInfo.contact.phone.replace(/\s+/g, '')}" class="text-primary" style="font-weight: 500;">${studioInfo.contact.phone}</a>
               </p>
             </div>
 
             <div style="margin-top: var(--space-md);">
               <div class="contact-item-label">HOURS</div>
-              <p class="contact-item-desc">${studioInfo.contact.hours}<br><span style="color: var(--color-text-light); font-size: 0.85rem;">by prior appointment</span></p>
+              <p class="contact-item-desc">${studioInfo.contact.hours}<br><span style="color: var(--color-text-light); font-size: 0.85rem;">By prior appointment</span></p>
             </div>
           </div>
 
           <!-- Column 2: Enquiry Form Block -->
           <div class="contact-form-wrapper reveal-fade-up delay-1" id="enquiry-form-container">
-            <h3 class="form-heading font-serif">project outline</h3>
+            <h3 class="form-heading font-serif">Project Outline</h3>
             
             <form id="project-enquiry-form" novalidate style="margin-top: var(--space-md);">
               <div class="form-group">
-                <label for="form-name" class="form-label">full name *</label>
-                <input type="text" id="form-name" class="form-control" placeholder="your name" required>
+                <label for="form-name" class="form-label">Full Name *</label>
+                <input type="text" id="form-name" class="form-control" placeholder="Your name" required>
               </div>
 
               <div class="form-group">
-                <label for="form-email" class="form-label">email address *</label>
+                <label for="form-email" class="form-label">Email Address *</label>
                 <input type="email" id="form-email" class="form-control" placeholder="your@email.com" required>
               </div>
 
               <div class="form-group">
-                <label for="form-project-type" class="form-label">discipline *</label>
+                <label for="form-project-type" class="form-label">Discipline *</label>
                 <select id="form-project-type" class="form-control" required>
-                  <option value="" disabled selected>select a category</option>
+                  <option value="" disabled selected>Select a category</option>
                   <option value="Interiors">Interiors</option>
                   <option value="Architecture">Architecture</option>
                   <option value="Commercial">Commercial</option>
@@ -74,12 +74,12 @@ export const ContactView = {
               </div>
 
               <div class="form-group">
-                <label for="form-message" class="form-label">project brief & location *</label>
-                <textarea id="form-message" class="form-control" rows="4" placeholder="brief outline of scope, site location, and timeline..." required></textarea>
+                <label for="form-message" class="form-label">Project Brief & Location *</label>
+                <textarea id="form-message" class="form-control" rows="4" placeholder="Brief outline of scope, site location, and timeline..." required></textarea>
               </div>
 
               <div style="margin-top: var(--space-md);">
-                <button type="submit" class="btn btn-blueprint" style="width: 100%;">send inquiry</button>
+                <button type="submit" class="btn btn-blueprint" style="width: 100%;">Send Inquiry</button>
               </div>
             </form>
           </div>
@@ -139,12 +139,12 @@ export const ContactView = {
         setTimeout(() => {
           formContainer.innerHTML = `
             <div style="padding: var(--space-lg) 0; text-align: center;">
-              <h3 class="font-serif" style="font-size: 1.8rem; margin-bottom: 8px;">message received</h3>
+              <h3 class="font-serif" style="font-size: 1.8rem; margin-bottom: 8px;">Message Received</h3>
               <p style="color: var(--color-text-muted); margin-bottom: 24px;">
-                thank you, <strong>${nameInput.value.trim()}</strong>. our studio directors will review your project brief and get in touch within 24–48 hours.
+                Thank you, <strong>${nameInput.value.trim()}</strong>. Our studio directors will review your project brief and get in touch within 24–48 hours.
               </p>
               <a href="/projects" data-nav="projects" class="btn btn-blueprint">
-                view portfolio
+                View Portfolio
               </a>
             </div>
           `;

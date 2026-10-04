@@ -166,7 +166,7 @@
   font-family: var(--font-sans);
   font-size: 1.25rem;
   font-weight: 500;
-  text-transform: lowercase;
+  text-transform: none;
   color: var(--color-text);
   padding: 8px 16px;
   display: inline-block;
@@ -228,7 +228,7 @@
   font-size: 0.82rem;
   color: #8c93a0;
   margin-top: 3px;
-  text-transform: lowercase;
+  text-transform: none;
 }
 
 .footer-email-link {

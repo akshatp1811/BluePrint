@@ -3,11 +3,11 @@
    ========================================================================== */
 
 export const studioInfo = {
-  name: 'blueprint design studio',
-  tagline: 'an architecture and interiors studio in civil lines, working from first sketch to final handover',
-  headline: 'spaces drawn with intention, built with precision',
+  name: 'Blueprint Design Studio',
+  tagline: 'An architecture and interiors studio in Civil Lines, working from first sketch to final handover',
+  headline: 'Spaces drawn with intention, built with precision',
   locationLabel: 'ARCHITECTURE AND INTERIORS, PRAYAGRAJ',
-  subLocation: 'civil lines, prayagraj',
+  subLocation: 'Civil Lines, Prayagraj',
   contact: {
     address: 'Civil Lines, Prayagraj, Uttar Pradesh, India',
     phone: '+91 98765 43210',
@@ -20,11 +20,11 @@ export const studioInfo = {
     { name: 'Pinterest', url: '#' }
   ],
   quote: {
-    text: '"the team understood exactly what we wanted before we could even explain it fully"',
-    author: 'client, tiwari residence'
+    text: '"The team understood exactly what we wanted before we could even explain it fully"',
+    author: 'Client, Tiwari Residence'
   },
   aboutStory: {
-    heading: 'precision in every line.',
+    heading: 'Precision in every line.',
     shortIntro: 'Blueprint Design Studio is an architecture and interiors practice based in Civil Lines, Prayagraj. We focus on restrained, context-aware spaces that unite structural clarity with tactile warmth.',
     paragraphs: [
       'We believe architecture should be quiet, functional, and deeply intentional. Operating from Civil Lines, Prayagraj, our studio handles projects from the first conceptual sketch through detailing, structural engineering, and final turnkey handover.',
@@ -33,44 +33,57 @@ export const studioInfo = {
   }
 };
 
+export const constructionComparison = {
+  tagline: 'Site Transformation',
+  title: 'From Groundwork to Living Space',
+  description: 'Experience the architectural evolution as raw structural masonry, scaffolding, and concrete foundations transform into a refined, light-filled contemporary sanctuary.',
+  beforeImage: '/assets/projects/construction_before.jpg',
+  afterImage: '/assets/projects/construction_after.jpg',
+  beforeAlt: 'Living space during active construction phase with exposed masonry and scaffolding',
+  afterAlt: 'Completed luxury interior living room with bespoke joinery, art, and natural lighting',
+  beforeLabel: 'Before',
+  afterLabel: 'After',
+  caption: 'Slide or drag horizontally to compare the raw construction phase with the completed living volume.'
+};
+
 export const services = [
   {
     num: '01',
-    title: 'architecture',
-    desc: 'structural and spatial design for new builds and renovations'
+    title: 'Architecture',
+    desc: 'Structural and spatial design for new builds and renovations'
   },
   {
     num: '02',
-    title: 'interiors',
-    desc: 'full-scope interior fit-outs, residential and commercial'
+    title: 'Interiors',
+    desc: 'Full-scope interior fit-outs, residential and commercial'
   },
   {
     num: '03',
-    title: 'design to build',
-    desc: 'in step with cnc construction for seamless execution'
+    title: 'Design to Build',
+    desc: 'In step with CNC construction for seamless execution'
   }
 ];
 
 export const processSteps = [
   {
     num: '01',
-    title: 'consultation',
-    desc: 'brief definition, spatial review, and budget feasibility'
+    title: 'Consultation',
+    desc: 'Brief definition, spatial review, and budget feasibility'
   },
   {
     num: '02',
-    title: 'design and planning',
-    desc: 'architectural drawings, material palettes, and 3D volumes'
+    title: 'Design & Planning',
+    desc: 'Architectural drawings, material palettes, and 3D volumes'
   },
   {
     num: '03',
-    title: 'execution',
-    desc: 'on-site coordination, precision joinery, and structural builds'
+    title: 'Execution',
+    desc: 'On-site coordination, precision joinery, and structural builds'
   },
   {
     num: '04',
-    title: 'handover',
-    desc: 'final finishing inspections, commissioning, and client walk-through'
+    title: 'Handover',
+    desc: 'Final finishing inspections, commissioning, and client walk-through'
   }
 ];
 
@@ -110,10 +123,10 @@ export const team = [
 export const projects = [
   {
     id: 'nikhil-yadav-residence',
-    title: 'nikhil yadav residence',
-    tagline: 'minimalist bespoke residential interior in civil lines.',
-    location: 'prayagraj',
-    category: 'interiors',
+    title: 'Nikhil Yadav Residence',
+    tagline: 'Minimalist bespoke residential interior in Civil Lines.',
+    location: 'Civil Lines, Prayagraj',
+    category: 'Interiors',
     year: '2024',
     client: 'Nikhil Yadav',
     area: '3,800 sq ft',
@@ -125,6 +138,15 @@ export const projects = [
       { url: '/assets/projects/azure_detail.jpg', caption: 'Architectural joinery and tactile materials.' },
       { url: '/assets/projects/construction_after.jpg', caption: 'Completed living volume.' }
     ],
+    comparison: {
+      beforeImage: '/assets/projects/construction_before.jpg',
+      afterImage: '/assets/projects/construction_after.jpg',
+      beforeAlt: 'Nikhil Yadav Residence during active construction',
+      afterAlt: 'Nikhil Yadav Residence completed living volume',
+      beforeLabel: 'Before',
+      afterLabel: 'After',
+      caption: 'Slide to compare the active structural construction phase with the completed living space.'
+    },
     drawings: [
       { name: 'Interior Spatial Plan', url: '/assets/projects/azure_drawing_floor.jpg' }
     ],
@@ -141,10 +163,10 @@ export const projects = [
   },
   {
     id: 'tiwari-residence',
-    title: 'tiwari residence',
-    tagline: 'refined spatial renovation celebrating soft daylight and natural stone.',
-    location: 'prayagraj',
-    category: 'interiors',
+    title: 'Tiwari Residence',
+    tagline: 'Refined spatial renovation celebrating soft daylight and natural stone.',
+    location: 'Civil Lines, Prayagraj',
+    category: 'Interiors',
     year: '2024',
     client: 'The Tiwari Family',
     area: '4,200 sq ft',
@@ -156,6 +178,15 @@ export const projects = [
       { url: '/assets/projects/courtyard_house_int.jpg', caption: 'Courtyard dining space with granite columns.' },
       { url: '/assets/projects/azure_detail.jpg', caption: 'Detailing of custom cabinetry.' }
     ],
+    comparison: {
+      beforeImage: '/assets/projects/construction_before.jpg',
+      afterImage: '/assets/projects/construction_after.jpg',
+      beforeAlt: 'Tiwari Residence during active construction',
+      afterAlt: 'Tiwari Residence completed living volume',
+      beforeLabel: 'Before',
+      afterLabel: 'After',
+      caption: 'Slide to compare the active structural construction phase with the completed living space.'
+    },
     drawings: [
       { name: 'Floor Layout Plan', url: '/assets/projects/courtyard_house_drawing_site.jpg' }
     ],
@@ -172,10 +203,10 @@ export const projects = [
   },
   {
     id: 'lawyers-office-fit-out',
-    title: "lawyer's office fit-out",
-    tagline: 'precise legal chambers combining acoustic privacy with architectural dignity.',
-    location: 'prayagraj',
-    category: 'commercial',
+    title: "Lawyer's Office Fit-out",
+    tagline: 'Precise legal chambers combining acoustic privacy with architectural dignity.',
+    location: 'Civil Lines, Prayagraj',
+    category: 'Commercial',
     year: '2023',
     client: 'Senior Advocate Chamber',
     area: '2,600 sq ft',
@@ -205,8 +236,8 @@ export const projects = [
     id: 'azure-residence',
     title: 'Azure Residence',
     tagline: 'A concrete pavilion defined by water, light, and natural landscape.',
-    location: 'bengaluru',
-    category: 'architecture',
+    location: 'Bengaluru, India',
+    category: 'Architecture',
     year: '2025',
     client: 'The Somany Family',
     area: '4,500 sq ft',
@@ -218,6 +249,15 @@ export const projects = [
       { url: '/assets/projects/azure_int.jpg', caption: 'Double-height living space with local teak and raw concrete.' },
       { url: '/assets/projects/azure_detail.jpg', caption: 'Tactile detailing showing board-formed concrete texture and shadow lines.' }
     ],
+    comparison: {
+      beforeImage: '/assets/projects/construction_before.jpg',
+      afterImage: '/assets/projects/construction_after.jpg',
+      beforeAlt: 'Azure Residence during active construction',
+      afterAlt: 'Azure Residence completed living volume',
+      beforeLabel: 'Before',
+      afterLabel: 'After',
+      caption: 'Slide to compare the active structural construction phase with the completed living space.'
+    },
     drawings: [
       { name: 'Ground Floor Plan', url: '/assets/projects/azure_drawing_floor.jpg' },
       { name: 'Building Elevation', url: '/assets/projects/azure_drawing_elevation.jpg' }

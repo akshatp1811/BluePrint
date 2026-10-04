@@ -7,11 +7,11 @@ import { studioInfo } from '../data/content.js';
 export const Navbar = {
   render(activeRoute = 'home') {
     const links = [
-      { id: 'about', label: 'about', path: '/about' },
-      { id: 'services', label: 'services', path: '/#services' },
-      { id: 'projects', label: 'portfolio', path: '/projects' },
-      { id: 'process', label: 'process', path: '/#process' },
-      { id: 'contact', label: 'contact', path: '/contact' }
+      { id: 'home', label: 'Home', path: '/' },
+      { id: 'about', label: 'About', path: '/about' },
+      { id: 'services', label: 'Services', path: '/#services' },
+      { id: 'projects', label: 'Projects', path: '/projects' },
+      { id: 'contact', label: 'Contact', path: '/contact' }
     ];
 
     const desktopLinksMarkup = links
@@ -43,7 +43,7 @@ export const Navbar = {
         <div class="container navbar-inner">
           <!-- Logo matching reference -->
           <a href="/" data-nav="home" class="logo">
-            <span class="logo-blue">blueprint</span> <span class="logo-dark">design studio</span>
+            <span class="logo-blue">Blueprint</span> <span class="logo-dark">Design Studio</span>
           </a>
 
           <!-- Desktop Navigation -->

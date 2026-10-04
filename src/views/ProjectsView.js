@@ -3,18 +3,19 @@
    Connected with blueprint-inspired navy grid header and refined project cards
    ========================================================================== */
 
-import { projects } from '../data/content.js';
+import { projects, constructionComparison } from '../data/content.js';
 import { setupScrollReveals } from '../app.js';
+import { ImageComparisonSlider } from '../components/ImageComparisonSlider.js';
 
 export const ProjectsView = {
-  currentCategory: 'all',
+  currentCategory: 'All',
 
   async render() {
-    const categories = ['all', 'interiors', 'architecture', 'commercial'];
+    const categories = ['All', 'Interiors', 'Architecture', 'Commercial'];
     
     const filterButtonsMarkup = categories
       .map(cat => {
-        const isActive = this.currentCategory === cat;
+        const isActive = this.currentCategory.toLowerCase() === cat.toLowerCase();
         return `
           <button class="blueprint-filter-btn ${isActive ? 'active' : ''}" data-filter="${cat}">
             ${cat}
@@ -26,14 +27,27 @@ export const ProjectsView = {
     // Initial render displays all projects
     const cardsMarkup = this.renderProjectCards(projects);
 
+    const comparisonMarkup = ImageComparisonSlider.render({
+      id: 'projects-construction-slider',
+      beforeImage: constructionComparison.beforeImage,
+      afterImage: constructionComparison.afterImage,
+      beforeAlt: constructionComparison.beforeAlt,
+      afterAlt: constructionComparison.afterAlt,
+      beforeLabel: constructionComparison.beforeLabel,
+      afterLabel: constructionComparison.afterLabel,
+      initialPosition: 50,
+      aspectRatio: '16 / 9',
+      caption: constructionComparison.caption
+    });
+
     return `
       <!-- Blueprint Grid Navy Hero Header -->
       <section class="blueprint-grid-bg projects-blueprint-hero">
         <div class="container projects-hero-inner">
           <div class="projects-pill reveal-fade-up">PORTFOLIO ARCHIVE</div>
-          <h1 class="projects-title font-serif reveal-fade-up">selected works</h1>
+          <h1 class="projects-title font-serif reveal-fade-up">Selected Works</h1>
           <p class="projects-subtitle reveal-fade-up">
-            spaces drawn with intention, built with precision across residential, commercial, and interior sectors.
+            Spaces drawn with intention, built with precision across residential, commercial, and interior sectors.
           </p>
         </div>
       </section>
@@ -52,6 +66,20 @@ export const ProjectsView = {
           <!-- Portfolio Grid container -->
           <div class="blueprint-work-grid" id="portfolio-grid-container">
             ${cardsMarkup}
+          </div>
+        </div>
+      </section>
+
+      <!-- Construction Transformation Section (Interactive Comparison Slider) -->
+      <section class="transformation-section" id="projects-transformation">
+        <div class="container">
+          <div class="transformation-header reveal-fade-up">
+            <span class="label-mono">${constructionComparison.tagline}</span>
+            <h2 class="transformation-title">${constructionComparison.title}</h2>
+            <p class="transformation-desc">${constructionComparison.description}</p>
+          </div>
+          <div class="reveal-fade-up delay-1">
+            ${comparisonMarkup}
           </div>
         </div>
       </section>
@@ -115,7 +143,7 @@ export const ProjectsView = {
         this.currentCategory = selectedCat;
 
         let filteredProjects = projects;
-        if (selectedCat !== 'all') {
+        if (selectedCat.toLowerCase() !== 'all') {
           filteredProjects = projects.filter(
             p => p.category.toLowerCase() === selectedCat.toLowerCase()
           );
@@ -136,5 +164,8 @@ export const ProjectsView = {
         }
       });
     });
+
+    // 4. Initialize Interactive Comparison Slider
+    ImageComparisonSlider.init('#projects-construction-slider');
   }
 };

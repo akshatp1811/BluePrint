@@ -10,8 +10,8 @@ export const Footer = {
       <footer class="footer blueprint-footer">
         <div class="container footer-content-minimal">
           <div class="footer-left">
-            <a href="/" data-nav="home" class="footer-studio-name">blueprint design studio</a>
-            <div class="footer-location-sub">civil lines, prayagraj</div>
+            <a href="/" data-nav="home" class="footer-studio-name">Blueprint Design Studio</a>
+            <div class="footer-location-sub">Civil Lines, Prayagraj</div>
           </div>
           <div class="footer-right">
             <a href="mailto:${studioInfo.contact.email}" class="footer-email-link">${studioInfo.contact.email}</a>
