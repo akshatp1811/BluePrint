@@ -8,8 +8,8 @@ export const Navbar = {
   render(activeRoute = 'home') {
     const links = [
       { id: 'home', label: 'Home', path: '/' },
-      { id: 'projects', label: 'Projects', path: '/projects' },
       { id: 'about', label: 'About', path: '/about' },
+      { id: 'projects', label: 'Projects', path: '/projects' },
       { id: 'contact', label: 'Contact', path: '/contact' }
     ];
 
@@ -19,7 +19,7 @@ export const Navbar = {
         <li class="nav-item">
           <a href="${link.path}" data-nav="${link.id}" class="nav-link ${
           activeRoute === link.id ? 'active' : ''
-        }">${link.label}</a>
+        } ${link.id === 'contact' ? 'nav-link-contact' : ''}">${link.label}</a>
         </li>
       `
       )
@@ -40,9 +40,9 @@ export const Navbar = {
     return `
       <nav class="navbar" id="main-navbar">
         <div class="container navbar-inner">
-          <!-- Logo -->
+          <!-- Logo matching reference -->
           <a href="/" data-nav="home" class="logo">
-            BLUE <span class="logo-blue">PRINT</span>
+            <span class="logo-blue">Blueprint</span> <span class="logo-dark">Design Studio</span>
           </a>
 
           <!-- Desktop Navigation -->
@@ -50,11 +50,9 @@ export const Navbar = {
             ${desktopLinksMarkup}
           </ul>
 
-          <!-- Right side CTA -->
+          <!-- Right side CTA Button -->
           <div class="nav-cta">
-            <a href="/contact" data-nav="contact" class="btn btn-secondary" style="padding: 10px 24px; font-size: 0.8rem;">
-              Start a Project
-            </a>
+            <a href="/contact" data-nav="contact" class="btn-build-with-us">Build with Us</a>
           </div>
 
           <!-- Mobile Toggle Hamburger -->
@@ -70,9 +68,9 @@ export const Navbar = {
           <ul class="mobile-nav-list">
             ${mobileLinksMarkup}
           </ul>
-          <a href="/contact" data-nav="contact" class="btn btn-primary" id="mobile-cta-btn">
-            Start a Project
-          </a>
+          <div class="mobile-cta-wrap">
+            <a href="/contact" data-nav="contact" class="btn-build-with-us">Build with Us</a>
+          </div>
         </div>
       </nav>
     `;
@@ -85,16 +83,16 @@ export const Navbar = {
 
     if (!navbar) return;
 
-    // 1. Sticky Scroll Behavior (Shrink Height & Add Backdrop Blur)
+    // 1. Sticky Scroll Behavior
     const handleScroll = () => {
-      if (window.scrollY > 40) {
+      if (window.scrollY > 30) {
         navbar.classList.add('scrolled');
       } else {
         navbar.classList.remove('scrolled');
       }
     };
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Trigger immediately to check page initial load position
+    handleScroll();
 
     // 2. Mobile Menu Toggle Action
     const toggleMenu = () => {
@@ -104,42 +102,63 @@ export const Navbar = {
       mobileNav.classList.toggle('active');
 
       if (!isExpanded) {
-        document.body.style.overflow = 'hidden'; // Lock background scrolling
+        document.body.style.overflow = 'hidden';
       } else {
         document.body.style.overflow = '';
       }
     };
 
-    toggleBtn.addEventListener('click', toggleMenu);
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', toggleMenu);
+    }
 
-    // 3. Close mobile menu on clicking any navigation link
-    const mobileLinks = mobileNav.querySelectorAll('a[data-nav]');
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // Remove overflow block
+    // Navigation link helper
+    const handleLinkClick = (e, link) => {
+      e.preventDefault();
+      const routeName = link.getAttribute('data-nav');
+      const href = link.getAttribute('href');
+
+      if (toggleBtn && mobileNav && mobileNav.classList.contains('active')) {
         document.body.style.overflow = '';
         toggleBtn.classList.remove('active');
         mobileNav.classList.remove('active');
         toggleBtn.setAttribute('aria-expanded', 'false');
+      }
 
-        // Route using custom SPA router
-        const routeName = link.getAttribute('data-nav');
-        const path = link.getAttribute('href');
-        router.navigate(path, routeName);
-      });
-    });
+      if (href.includes('#')) {
+        const [path, hash] = href.split('#');
+        const currentPath = window.location.pathname;
 
-    // 4. Bind standard links inside the Navbar (Logo, Desktop Links, CTA)
-    const activeNavbarLinks = navbar.querySelectorAll('.navbar-inner a[data-nav]');
-    activeNavbarLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const routeName = link.getAttribute('data-nav');
-        const path = link.getAttribute('href');
-        router.navigate(path, routeName);
+        if (currentPath === '/' || path === '') {
+          const targetEl = document.getElementById(hash);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth' });
+            return;
+          }
+        }
+        // If on another page, navigate home then scroll
+        router.navigate('/', 'home');
+        setTimeout(() => {
+          const targetEl = document.getElementById(hash);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 300);
+      } else {
+        router.navigate(href, routeName);
+      }
+    };
+
+    // Bind mobile links
+    if (mobileNav) {
+      mobileNav.querySelectorAll('a[data-nav]').forEach(link => {
+        link.addEventListener('click', (e) => handleLinkClick(e, link));
       });
+    }
+
+    // Bind desktop links & logo
+    navbar.querySelectorAll('.navbar-inner a[data-nav]').forEach(link => {
+      link.addEventListener('click', (e) => handleLinkClick(e, link));
     });
   }
 };

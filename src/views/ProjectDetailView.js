@@ -5,6 +5,7 @@
 import { projects } from '../data/content.js';
 import { setupScrollReveals } from '../app.js';
 import { Lightbox } from '../components/Lightbox.js';
+import { ImageComparisonSlider } from '../components/ImageComparisonSlider.js';
 
 export const ProjectDetailView = {
   async render(params) {
@@ -23,11 +24,7 @@ export const ProjectDetailView = {
     }
 
     const project = projects[projectIndex];
-    
-    // Determine the next project for the bottom navigation link
-    const nextProjectIndex = (projectIndex + 1) % projects.length;
-    const nextProject = projects[nextProjectIndex];
-
+ 
     // Assemble Specs Grid
     const specs = [
       { label: 'Client', val: project.client },
@@ -90,6 +87,36 @@ export const ProjectDetailView = {
       })
       .join('');
 
+    // Comparison Slider markup if project has comparison defined
+    let comparisonMarkup = '';
+    if (project.comparison) {
+      const sliderHtml = ImageComparisonSlider.render({
+        id: `project-comparison-${project.id}`,
+        beforeImage: project.comparison.beforeImage,
+        afterImage: project.comparison.afterImage,
+        beforeAlt: project.comparison.beforeAlt,
+        afterAlt: project.comparison.afterAlt,
+        beforeLabel: project.comparison.beforeLabel || 'BEFORE',
+        afterLabel: project.comparison.afterLabel || 'AFTER',
+        caption: project.comparison.caption
+      });
+
+      comparisonMarkup = `
+        <section class="transformation-section">
+          <div class="container">
+            <div class="reveal-fade-up" style="max-width: 600px; margin-bottom: var(--space-xl);">
+              <span class="label-mono">Transformation</span>
+              <h2>Construction vs Completion</h2>
+              <p class="section-subtitle">Slide to compare the active building phase with the realized architectural volume.</p>
+            </div>
+            <div class="reveal-fade-up delay-1">
+              ${sliderHtml}
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
     // Story Editorial rows (alternating text left/right and image left/right)
     const storyMarkup = project.story
       .map((story, index) => {
@@ -110,14 +137,23 @@ export const ProjectDetailView = {
       .join('');
 
     return `
-      <!-- Hero Header -->
-      <section class="project-detail-hero">
-        <img src="${project.heroImage}" alt="${project.title}" class="detail-hero-bg hero-bg-reveal">
-        <div class="detail-hero-overlay"></div>
-        <div class="container detail-hero-content">
-          <span class="label-mono hero-title-reveal" style="color: #ffffff; border-bottom: 2px solid var(--color-primary); padding-bottom: 4px;">Featured Project</span>
-          <h1 class="detail-hero-title hero-title-reveal">${project.title}</h1>
-          <p class="detail-hero-meta hero-subtitle-reveal">${project.location} &mdash; ${project.year}</p>
+      <!-- Blueprint Grid Header -->
+      <section class="blueprint-grid-bg projects-blueprint-hero">
+        <div class="container projects-hero-inner">
+          <div class="projects-pill reveal-fade-up">${project.category} &mdash; ${project.location}</div>
+          <h1 class="projects-title font-serif reveal-fade-up">${project.title}</h1>
+          <p class="projects-subtitle reveal-fade-up">${project.tagline || ''}</p>
+        </div>
+      </section>
+
+      <div class="scale-ruler-bar" aria-hidden="true"></div>
+
+      <!-- Main Project Image Feature -->
+      <section class="detail-main-image-section">
+        <div class="container">
+          <div class="detail-main-image-wrap reveal-fade-up">
+            <img src="${project.heroImage}" alt="${project.title}" class="detail-main-img">
+          </div>
         </div>
       </section>
 
@@ -183,15 +219,8 @@ export const ProjectDetailView = {
         </div>
       </section>
 
-      <!-- Next Project Link Anchor -->
-      <section class="next-project-section" id="next-project-btn" data-next-id="${nextProject.id}">
-        <img src="${nextProject.heroImage}" alt="${nextProject.title}" class="next-project-bg">
-        <div class="container next-project-content">
-          <span class="next-project-label">Next Project &rarr;</span>
-          <h2 class="next-project-title">${nextProject.title}</h2>
-          <div class="next-project-arrow">&darr;</div>
-        </div>
-      </section>
+      <!-- Before / After Construction Comparison Section -->
+      ${comparisonMarkup}
     `;
   },
 
@@ -243,13 +272,9 @@ export const ProjectDetailView = {
       });
     });
 
-    // 5. Navigate to Next Project click listener
-    const nextBtn = document.getElementById('next-project-btn');
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        const nextId = nextBtn.getAttribute('data-next-id');
-        router.navigate(`/project/${nextId}`, 'projects');
-      });
+    // 5. Initialize comparison slider if present
+    if (project.comparison) {
+      ImageComparisonSlider.init(`#project-comparison-${project.id}`);
     }
   }
 };

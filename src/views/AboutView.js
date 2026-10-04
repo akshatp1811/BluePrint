@@ -1,128 +1,90 @@
 /* ==========================================================================
-   BLUE PRINT - About Page View
+   BLUE PRINT - Minimal Editorial About Studio View
    ========================================================================== */
 
-import { studioInfo, team, services, designPhilosophy } from '../data/content.js';
+import { studioInfo, team } from '../data/content.js';
 import { setupScrollReveals } from '../app.js';
 
 export const AboutView = {
   async render() {
-    const storyParagraphs = studioInfo.aboutStory.paragraphs
-      .map(p => `<p>${p}</p>`)
-      .join('');
+    // Four slots for four core team members as requested
+    const coreTeam = team.slice(0, 4);
 
-    // Approach principles (we add Sustainability as the 4th item or use our designPhilosophy list)
-    // Let's create the 4 principles requested: Context, Function, Material, Sustainability
-    const principles = [
-      { num: '01', title: 'Context', desc: 'Every site has a narrative. We carefully study local context, native geography, daylight paths, and cultural heritage to design forms that look natural and grounded in their landscape.' },
-      { num: '02', title: 'Function', desc: 'Architecture should enhance day-to-day living. We design internal flows from the inside out, aligning geometry and custom divisions with the specific routines of the users.' },
-      { num: '03', title: 'Material', desc: 'We value tactile authenticity. Our studio favors raw concrete, textured local timbers, natural brick, and raw iron, letting the true physical qualities of materials serve as the ornament.' },
-      { num: '04', title: 'Sustainability', desc: 'Spaces designed for longevity. We integrate passive solar shading, cross-ventilation shafts, structural thermal mass, and high-performance screens to minimize carbon footprint.' }
-    ];
-
-    const principlesMarkup = principles
-      .map(
-        pr => `
-        <div class="principle-row reveal-fade-up">
-          <div class="principle-border"></div>
-          <div class="principle-num">${pr.num}</div>
-          <h3 class="principle-title">${pr.title}</h3>
-          <p class="principle-desc">${pr.desc}</p>
-        </div>
-      `
-      )
-      .join('');
-
-    const servicesMarkup = services
-      .map(
-        svc => `
-        <div class="service-card reveal-fade-up">
-          <h3 class="service-card-title">${svc.title}</h3>
-          <p class="service-card-desc">${svc.desc}</p>
-        </div>
-      `
-      )
-      .join('');
-
-    const teamMarkup = team
-      .map(
-        t => `
-        <div class="team-card reveal-fade-up">
-          <div class="team-image-wrapper">
-            <img src="${t.image}" alt="${t.name}" class="team-image">
-            <div class="team-overlay"></div>
+    const teamCardsMarkup = coreTeam
+      .map(member => {
+        return `
+          <div class="team-card reveal-fade-up">
+            <div class="team-image-wrapper">
+              <img src="${member.image}" alt="${member.name}" class="team-member-img" loading="lazy">
+            </div>
+            <div class="team-card-info">
+              <h3 class="team-member-name">${member.name}</h3>
+              <p class="team-member-role">${member.role}</p>
+            </div>
           </div>
-          <div class="team-card-info">
-            <h3 class="team-name">${t.name}</h3>
-            <span class="team-role">${t.role}</span>
-          </div>
-        </div>
-      `
-      )
+        `;
+      })
       .join('');
 
     return `
-      <!-- About Hero -->
-      <section class="about-hero">
-        <div class="container">
-          <span class="label-mono reveal-fade-up">About Studio</span>
-          <h1 class="reveal-fade-up">${studioInfo.aboutStory.heading}</h1>
-          <p class="section-subtitle reveal-fade-up" style="max-width: 600px;">
-            BLUE PRINT is a contemporary architecture and design studio focused on creating thoughtful spaces that respond to people, context, and the environment.
+      <!-- About Blueprint Header -->
+      <section class="blueprint-grid-bg projects-blueprint-hero">
+        <div class="container projects-hero-inner">
+          <div class="projects-pill reveal-fade-up">${studioInfo.locationLabel}</div>
+          <h1 class="projects-title font-serif reveal-fade-up">About the Studio</h1>
+          <p class="projects-subtitle reveal-fade-up">
+            ${studioInfo.tagline}
           </p>
         </div>
       </section>
 
-      <!-- Story Narrative -->
-      <section class="about-story-section">
-        <div class="container about-story-grid">
-          <div class="reveal-fade-up">
-            <h2 style="font-weight: 300; line-height: 1.2;">Crafting spaces that balance form, function, and human experience.</h2>
+      <div class="scale-ruler-bar" aria-hidden="true"></div>
+
+      <!-- Meet Our Team Section (First with 4 slots for 4 team members) -->
+      <section class="blueprint-team-section">
+        <div class="container">
+          <div class="team-section-header reveal-fade-up">
+            <span class="label-mono">Our Team</span>
+            <h2 class="team-section-title font-serif">Meet Our Team</h2>
+            <p class="team-section-subtitle">
+              Our multidisciplinary studio brings together architectural clarity, structural precision, and tailored interior craftsmanship.
+            </p>
           </div>
-          <div class="about-story-content reveal-fade-up delay-1">
-            ${storyParagraphs}
+          <div class="blueprint-team-grid">
+            ${teamCardsMarkup}
           </div>
         </div>
       </section>
 
-      <!-- Our Approach (Interactive List) -->
-      <section class="about-principles-section">
-        <div class="container">
-          <div class="reveal-fade-up" style="max-width: 600px; margin-bottom: var(--space-xl);">
-            <span class="label-mono">Principles</span>
-            <h2>Our Design Approach</h2>
-            <p class="section-subtitle">The guidelines that define our spatial thinking and structure details.</p>
-          </div>
-          <div class="principles-list">
-            ${principlesMarkup}
-          </div>
-        </div>
-      </section>
-
-      <!-- What We Do (Services) -->
-      <section class="about-services-section">
-        <div class="container">
-          <div class="reveal-fade-up" style="max-width: 600px;">
-            <span class="label-mono">Services</span>
-            <h2>Capabilities</h2>
-            <p class="section-subtitle">A comprehensive design service from early concepts to complete construction supervision.</p>
-          </div>
-          <div class="services-grid">
-            ${servicesMarkup}
+      <!-- Concise Studio Narrative -->
+      <section class="blueprint-about-story-section">
+        <div class="container about-minimal-container">
+          <div class="about-quote-box reveal-fade-up">
+            <h2 class="about-lead-headline font-serif">
+              Quiet, functional, and deeply intentional spaces.
+            </h2>
+            <p class="about-lead-body">
+              ${studioInfo.aboutStory.shortIntro}
+            </p>
+            <p class="about-lead-body" style="margin-top: 1rem;">
+              From initial drafting through structural coordination and interior turnkey joinery, our work emphasizes geometric restraint, natural illumination, and honest materials.
+            </p>
           </div>
         </div>
       </section>
 
-      <!-- Team Section -->
-      <section class="about-team-section">
-        <div class="container">
-          <div class="reveal-fade-up" style="max-width: 600px; margin-bottom: var(--space-xl);">
-            <span class="label-mono">People</span>
-            <h2>Meet the Team</h2>
-            <p class="section-subtitle">The creative architects, designers, and visualizers behind the spaces.</p>
-          </div>
-          <div class="team-grid">
-            ${teamMarkup}
+      <!-- Minimal Studio Contact CTA -->
+      <section class="blueprint-quote-section" style="border-top: 1px solid var(--color-border);">
+        <div class="container quote-container reveal-fade-up">
+          <h3 style="font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 12px; font-weight: 400;">
+            Ready to discuss your site or renovation?
+          </h3>
+          <p style="color: var(--color-text-muted); margin-bottom: 24px;">
+            Connect with our Civil Lines office in Prayagraj.
+          </p>
+          <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+            <a href="/contact" data-nav="contact" class="btn btn-blueprint">Get in Touch</a>
+            <a href="/contact" data-nav="contact" class="btn-build-with-us">Build with Us</a>
           </div>
         </div>
       </section>
@@ -130,7 +92,16 @@ export const AboutView = {
   },
 
   init(params, router) {
-    // Fire Scroll Reveal Observer
     setupScrollReveals();
+
+    const ctaLinks = document.querySelectorAll('.blueprint-about-story-section a[data-nav], .blueprint-quote-section a[data-nav]');
+    ctaLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const routeName = link.getAttribute('data-nav') || 'contact';
+        const path = link.getAttribute('href') || '/contact';
+        router.navigate(path, routeName);
+      });
+    });
   }
 };

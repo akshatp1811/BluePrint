@@ -3,43 +3,49 @@
    ========================================================================== */
 
 :root {
-  /* Architectural Palette */
-  --color-bg: #ffffff;
-  --color-bg-secondary: #f4f6fc; /* Subtle blue-grey */
-  --color-bg-accent-light: #edf1fa; /* Highlight secondary background */
-  --color-text: #111111; /* Dark charcoal */
-  --color-text-muted: #555555;
-  --color-text-light: #888888;
+  /* Architectural Blueprint Palette - Aligned with Reference */
+  --color-bg: #f7f6f2; /* Warm architectural paper / off-white */
+  --color-bg-card: #f3f1ec;
+  --color-bg-white: #ffffff;
+  --color-text: #16171a; /* Dark charcoal/black for primary text */
+  --color-text-muted: #4e535e; /* Muted architectural notes */
+  --color-text-light: #7e8592;
   
-  --color-primary: #0033ff; /* Vibrant Royal Blue */
-  --color-primary-hover: #0022cc;
-  --color-primary-alpha: rgba(0, 51, 255, 0.08);
-  --color-border: #e2e8f0;
-  --color-border-active: #0033ff;
+  --color-primary: #1d3d63; /* Signature Architectural Navy Blue */
+  --color-primary-hover: #142b47;
+  --color-primary-alpha: rgba(29, 61, 99, 0.08);
+  --color-blueprint-blue: #1b385e; /* Navy blue for blueprint grid sections */
+  --color-blueprint-grid-line: rgba(255, 255, 255, 0.09); /* Thin, low-contrast blueprint grid */
+  
+  --color-border: #dedad0; /* Fine drafting divider line */
+  --color-border-blue: rgba(29, 61, 99, 0.28);
+  --color-footer-bg: #11151c; /* Deep midnight charcoal footer */
   
   /* Typography */
-  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
 
   /* Layout and Spacing */
-  --container-max-width: 1440px;
-  --header-height-desktop: 90px;
-  --header-height-scroll: 70px;
-  --header-height-mobile: 70px;
+  --container-max-width: 1200px;
+  --header-height-desktop: 76px;
+  --header-height-scroll: 64px;
+  --header-height-mobile: 64px;
   
   --space-unit: 8px;
-  --space-xs: 8px;
-  --space-sm: 16px;
+  --space-xs: 6px;
+  --space-sm: 14px;
   --space-md: 24px;
-  --space-lg: 48px;
-  --space-xl: 80px;
-  --space-xxl: 120px;
+  --space-lg: 40px;
+  --space-xl: 64px;
+  --space-xxl: 96px;
 
   /* Animation & Transitions */
-  --transition-speed-fast: 0.25s;
-  --transition-speed-medium: 0.45s;
-  --transition-speed-slow: 0.75s;
-  --transition-curve: cubic-bezier(0.16, 1, 0.3, 1); /* Custom easeOutExpo */
+  --transition-speed-fast: 0.2s;
+  --transition-speed-medium: 0.35s;
+  --transition-speed-slow: 0.6s;
+  --transition-curve: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Base Reset & Styling */
@@ -51,7 +57,7 @@
 
 html {
   font-size: 16px;
-  scroll-behavior: auto; /* Disabled for custom transitions and instant scroll resets */
+  scroll-behavior: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-bg);
@@ -82,38 +88,47 @@ body {
 
 /* Typography System */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  line-height: 1.15;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  line-height: 1.2;
   color: var(--color-text);
 }
 
-h1 {
-  font-size: clamp(2.5rem, 6vw, 5.5rem);
-  font-weight: 300;
-  letter-spacing: -0.03em;
+.font-serif {
+  font-family: var(--font-serif);
 }
 
-h2 {
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  font-weight: 300;
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+h1 {
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-weight: 400;
   letter-spacing: -0.02em;
 }
 
-h3 {
-  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+h2 {
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
   font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+h3 {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 500;
   letter-spacing: -0.01em;
 }
 
 h4 {
-  font-size: 1.25rem;
-  font-weight: 500;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 p {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--color-text-muted);
+  line-height: 1.6;
 }
 
 a {
@@ -135,8 +150,8 @@ img {
   max-width: var(--container-max-width);
   margin-left: auto;
   margin-right: auto;
-  padding-left: clamp(20px, 5vw, 80px);
-  padding-right: clamp(20px, 5vw, 80px);
+  padding-left: clamp(20px, 4vw, 48px);
+  padding-right: clamp(20px, 4vw, 48px);
 }
 
 .page-container {
@@ -147,20 +162,83 @@ img {
 
 /* Helper Utilities */
 .text-primary { color: var(--color-primary); }
-.bg-secondary { background-color: var(--color-bg-secondary); }
-.bg-accent-light { background-color: var(--color-bg-accent-light); }
+.bg-secondary { background-color: var(--color-bg-card); }
 .border-top { border-top: 1px solid var(--color-border); }
 .border-bottom { border-bottom: 1px solid var(--color-border); }
 
-.label-mono {
-  font-family: var(--font-display);
+/* Blueprint Specific Utilities */
+.highlight-blue {
+  color: var(--color-primary);
+}
+
+.location-pill {
+  display: inline-block;
+  padding: 5px 22px;
+  border: 1px solid var(--color-primary);
+  border-radius: 9999px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-md);
+  background-color: transparent;
+}
+
+.scale-ruler-bar {
+  width: 100%;
+  height: 32px;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(29, 61, 99, 0.42) 0px,
+    rgba(29, 61, 99, 0.42) 1px,
+    transparent 1px,
+    transparent 28px
+  );
+  position: relative;
+}
+
+.blueprint-grid-bg {
+  background-color: var(--color-blueprint-blue);
+  background-image: 
+    linear-gradient(to right, var(--color-blueprint-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-blueprint-grid-line) 1px, transparent 1px);
+  background-size: 30px 30px;
+  color: #ffffff;
+}
+
+.blueprint-grid-light {
+  background-image: 
+    linear-gradient(to right, rgba(29, 61, 99, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(29, 61, 99, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.card-badge {
+  display: inline-block;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.15em;
+  padding: 3px 10px;
+  border-radius: 4px;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.label-mono {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   color: var(--color-primary);
   display: inline-block;
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
 }
 
 /* Buttons and Links */
@@ -168,42 +246,42 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 16px 36px;
+  padding: 10px 24px;
   cursor: pointer;
-  transition: all var(--transition-speed-medium) var(--transition-curve);
+  transition: all var(--transition-speed-fast) var(--transition-curve);
   border: 1px solid transparent;
-  position: relative;
-  overflow: hidden;
+  border-radius: 4px;
   outline: none;
 }
 
-.btn-primary {
+.btn-primary, .btn-blueprint {
   background-color: var(--color-primary);
   color: #ffffff;
+  text-transform: none;
+  letter-spacing: 0.01em;
 }
 
-.btn-primary:hover {
-  background-color: var(--color-text);
+.btn-primary:hover, .btn-blueprint:hover {
+  background-color: var(--color-primary-hover);
   color: #ffffff;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
   background-color: transparent;
   color: var(--color-text);
-  border-color: var(--color-text);
+  border-color: var(--color-border);
+  text-transform: none;
 }
 
 .btn-secondary:hover {
   background-color: var(--color-primary);
   color: #ffffff;
   border-color: var(--color-primary);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .btn-text {
@@ -212,13 +290,17 @@ img {
   color: var(--color-primary);
   display: inline-flex;
   align-items: center;
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
   border: none;
   cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.btn-text:hover {
+  color: var(--color-primary-hover);
 }
 
 .btn-text .arrow {
