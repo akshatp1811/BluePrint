@@ -75,7 +75,7 @@
   font-family: var(--font-sans);
   font-size: 0.9rem;
   font-weight: 400;
-  text-transform: lowercase;
+  text-transform: none;
   color: var(--color-text);
   padding: 6px 0;
   display: inline-block;
