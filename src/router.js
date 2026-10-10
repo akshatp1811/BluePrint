@@ -1,155 +1,74 @@
-/* ==========================================================================
-   BLUE PRINT - Client-Side SPA Router & Page Transitions
-   ========================================================================== */
-
 import { Navbar } from './components/Navbar.js';
 import { Footer } from './components/Footer.js';
+import { ImageComparisonSlider } from './components/ImageComparisonSlider.js';
+import { Lightbox } from './components/Lightbox.js';
+import { loadContent, copy, plainText, previewMode, projects } from './data/content.js';
 
 export class Router {
   constructor(routes, mountingPoint, navbarPoint, footerPoint) {
-    this.routes = routes;
-    this.mountingPoint = mountingPoint;
-    this.navbarPoint = navbarPoint;
-    this.footerPoint = footerPoint;
-    this.currentViewName = '';
+    Object.assign(this, { routes, mountingPoint, navbarPoint, footerPoint, sequence: 0 });
   }
-
   init() {
-    // 1. Intercept Global Clicks on data-nav elements
-    document.addEventListener('click', (e) => {
-      const link = e.target.closest('a[data-nav]');
-      if (link) {
-        e.preventDefault();
-        const routeName = link.getAttribute('data-nav');
-        const path = link.getAttribute('href');
-        this.navigate(path, routeName);
-      }
+    document.addEventListener('click', event => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target.closest('a[data-nav]');
+      if (!link) return;
+      event.preventDefault(); this.navigate(link.getAttribute('href'));
     });
-
-    // 2. Handle Browser Back / Forward buttons
-    window.addEventListener('popstate', () => {
-      this.resolveRoute(window.location.pathname);
-    });
-
-    // 3. Resolve the initial page load route
-    this.resolveRoute(window.location.pathname);
+    window.addEventListener('popstate', () => this.resolveRoute(location.pathname));
+    this.resolveRoute(location.pathname);
   }
-
-  navigate(path, routeName) {
-    if (window.location.pathname === path) return;
-    
-    window.history.pushState({}, '', path);
-    this.resolveRoute(path, routeName);
+  navigate(path) {
+    const url = new URL(path, location.origin);
+    if (url.origin !== location.origin || !['http:', 'https:'].includes(url.protocol)) { location.href = path; return; }
+    if (location.pathname === url.pathname && !url.hash) return;
+    if (previewMode) url.searchParams.set('preview', '1');
+    history.pushState({}, '', url.pathname + url.search + url.hash); this.resolveRoute(url.pathname);
   }
-
-  async resolveRoute(path, routeName) {
-    // Match route
-    let matchedRoute = this.matchRoute(path);
-
-    if (!matchedRoute) {
-      // Default fallback to home
-      matchedRoute = { route: this.routes['/'], params: {} };
-    }
-
-    const { route, params } = matchedRoute;
-    this.currentViewName = route.name;
-
-    // Trigger Page Transition Animation Sequence
+  async resolveRoute(path) {
+    const sequence = ++this.sequence;
     const overlay = document.getElementById('page-transition-overlay');
-    
-    if (overlay) {
-      // 1. Slide-up blue overlay to block viewport
-      overlay.classList.remove('animating-out');
-      overlay.classList.add('animating-in');
-
-      // 2. Wait for overlay to slide in fully (approx 450ms)
-      await new Promise(resolve => setTimeout(resolve, 450));
-      
-      // 3. Render Navbar & Footer dynamically (Navbar needs to highlight active state)
-      if (this.navbarPoint) {
-        this.navbarPoint.innerHTML = Navbar.render(this.currentViewName);
-        Navbar.init(this);
-      }
-      
-      if (this.footerPoint) {
-        this.footerPoint.innerHTML = Footer.render();
-        Footer.init(this);
-      }
-
-      // 4. Render main view content
-      this.mountingPoint.innerHTML = await route.view.render(params);
-      
-      // 5. Scroll page instantly back to top
+    overlay?.classList.remove('animating-out'); overlay?.classList.add('animating-in');
+    try {
+      await loadContent();
+      const match = this.matchRoute(path);
+      let markup;
+      if (!match) markup = `<div class="container" style="padding:80px 0"><h1>${copy.detail.missingHeading}</h1><p>${copy.detail.missingText}</p><a href="/projects" data-nav="projects">${copy.detail.missingLink}</a></div>`;
+      else markup = await match.route.view.render(match.params);
+      if (sequence !== this.sequence) return;
+      Navbar.destroy(); ImageComparisonSlider.destroy(); Lightbox.close();
+      this.currentViewName = match?.route.name || '';
+      this.navbarPoint.innerHTML = Navbar.render(this.currentViewName); Navbar.init(this);
+      this.footerPoint.innerHTML = Footer.render(); Footer.init(this);
+      this.mountingPoint.innerHTML = markup;
       window.scrollTo(0, 0);
-
-      // 6. Initialize page-specific behaviors, attach scroll reveals & animations
-      if (route.view.init) {
-        route.view.init(params, this);
-      }
-
-      // 7. Slide-up blue overlay out of viewport (reveal new page)
-      overlay.classList.remove('animating-in');
-      overlay.classList.add('animating-out');
-      
-      // 8. Clean up animation classes once finished
-      setTimeout(() => {
-        overlay.classList.remove('animating-out');
-      }, 600);
-
-    } else {
-      // Fallback: Immediate render if overlay elements are missing
-      if (this.navbarPoint) {
-        this.navbarPoint.innerHTML = Navbar.render(this.currentViewName);
-        Navbar.init(this);
-      }
-      if (this.footerPoint) {
-        this.footerPoint.innerHTML = Footer.render();
-        Footer.init(this);
-      }
-      this.mountingPoint.innerHTML = await route.view.render(params);
-      window.scrollTo(0, 0);
-      if (route.view.init) {
-        route.view.init(params, this);
+      match?.route.view.init?.(match.params, this);
+      const project = match?.params.id ? projects.find(p => p.id === match.params.id) : null;
+      const pageKey = path === '/' ? 'home' : this.currentViewName;
+      const routeTitle = project?.title || (match ? copy[pageKey]?.title : copy.detail.missingHeading);
+      document.title = plainText(routeTitle ? `${routeTitle} | ${copy.branding.titleSuffix}` : copy.seo.title);
+      document.querySelector('meta[name="description"]')?.setAttribute('content', plainText(project?.description || copy.seo.description));
+      let ogImage = document.querySelector('meta[property="og:image"]');
+      if (copy.seo.image) { if (!ogImage) { ogImage = document.createElement('meta'); ogImage.setAttribute('property', 'og:image'); document.head.append(ogImage); } ogImage.setAttribute('content', plainText(copy.seo.image)); }
+      else ogImage?.remove();
+      let favicon = document.querySelector('link[rel="icon"]');
+      if (copy.branding.favicon) { if (!favicon) { favicon = document.createElement('link'); favicon.rel = 'icon'; document.head.append(favicon); } favicon.href = plainText(copy.branding.favicon); }
+      else favicon?.remove();
+    } catch (failure) {
+      if (sequence !== this.sequence) return;
+      const message = document.createElement('p'); message.textContent = failure.message;
+      const button = document.createElement('button'); button.textContent = plainText(copy.interface?.retry || 'Retry'); button.onclick = () => this.resolveRoute(path);
+      this.mountingPoint.replaceChildren(message, button);
+    } finally {
+      if (sequence === this.sequence) {
+        overlay?.classList.remove('animating-in'); overlay?.classList.add('animating-out');
+        setTimeout(() => { if (sequence === this.sequence) overlay?.classList.remove('animating-out'); }, 600);
       }
     }
-
-    // Update browser title
-    document.title = `${route.title} | BLUE PRINT`;
   }
-
   matchRoute(path) {
-    // Exact match check
-    if (this.routes[path]) {
-      return { route: this.routes[path], params: {} };
-    }
-
-    // Dynamic path check (e.g. /project/:id)
-    for (const routePath in this.routes) {
-      if (routePath.includes(':')) {
-        const routeParts = routePath.split('/');
-        const pathParts = path.split('/');
-
-        if (routeParts.length === pathParts.length) {
-          const params = {};
-          let match = true;
-
-          for (let i = 0; i < routeParts.length; i++) {
-            if (routeParts[i].startsWith(':')) {
-              const paramName = routeParts[i].slice(1);
-              params[paramName] = pathParts[i];
-            } else if (routeParts[i] !== pathParts[i]) {
-              match = false;
-              break;
-            }
-          }
-
-          if (match) {
-            return { route: this.routes[routePath], params };
-          }
-        }
-      }
-    }
-
-    return null;
+    if (this.routes[path]) return { route: this.routes[path], params: {} };
+    const match = path.match(/^\/project\/([a-z0-9-]+)\/?$/);
+    return match ? { route: this.routes['/project/:id'], params: { id: match[1] } } : null;
   }
 }

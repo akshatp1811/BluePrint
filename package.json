@@ -3,12 +3,19 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "workspaces": ["admin", "server"],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "node scripts/dev.js",
+    "dev:site": "vite",
+    "dev:admin": "npm run dev --workspace admin",
+    "dev:api": "npm run dev --workspace server",
+    "build": "vite build && npm run build --workspace admin",
+    "preview": "vite preview",
+    "start": "npm run start --workspace server",
+    "test": "node --test server/test/*.test.js",
+    "backup": "npm run backup --workspace server"
   },
   "devDependencies": {
-    "vite": "^5.0.0"
+    "vite": "^8.3.4"
   }
 }

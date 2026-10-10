@@ -2,7 +2,7 @@
    BLUE PRINT - Reusable Footer Component
    ========================================================================== */
 
-import { studioInfo } from '../data/content.js';
+import { studioInfo, copy } from '../data/content.js';
 
 export const Footer = {
   render() {
@@ -10,8 +10,8 @@ export const Footer = {
       <footer class="footer blueprint-footer">
         <div class="container footer-content-minimal">
           <div class="footer-left">
-            <a href="/" data-nav="home" class="footer-studio-name">Blueprint Design Studio</a>
-            <div class="footer-location-sub">Civil Lines, Prayagraj</div>
+            <a href="/" data-nav="home" class="footer-studio-name">${copy.footer.name}</a>
+            <div class="footer-location-sub">${copy.footer.location}</div>
           </div>
           <div class="footer-right">
             <a href="mailto:${studioInfo.contact.email}" class="footer-email-link">${studioInfo.contact.email}</a>

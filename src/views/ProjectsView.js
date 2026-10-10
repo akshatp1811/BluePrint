@@ -3,7 +3,7 @@
    Connected with blueprint-inspired navy grid header and refined project cards
    ========================================================================== */
 
-import { projects, constructionComparison } from '../data/content.js';
+import { projects, constructionComparison, copy, categories } from '../data/content.js';
 import { setupScrollReveals } from '../app.js';
 import { ImageComparisonSlider } from '../components/ImageComparisonSlider.js';
 
@@ -11,14 +11,15 @@ export const ProjectsView = {
   currentCategory: 'All',
 
   async render() {
-    const categories = ['All', 'Interiors', 'Architecture', 'Commercial'];
+    this.currentCategory = 'All';
+    const filterCategories = ['All', ...categories];
     
-    const filterButtonsMarkup = categories
+    const filterButtonsMarkup = filterCategories
       .map(cat => {
         const isActive = this.currentCategory.toLowerCase() === cat.toLowerCase();
         return `
           <button class="blueprint-filter-btn ${isActive ? 'active' : ''}" data-filter="${cat}">
-            ${cat}
+            ${cat === 'All' ? copy.projects.all : cat}
           </button>
         `;
       })
@@ -44,10 +45,10 @@ export const ProjectsView = {
       <!-- Blueprint Grid Navy Hero Header -->
       <section class="blueprint-grid-bg projects-blueprint-hero">
         <div class="container projects-hero-inner">
-          <div class="projects-pill reveal-fade-up">PORTFOLIO ARCHIVE</div>
-          <h1 class="projects-title font-serif reveal-fade-up">Selected Works</h1>
+          <div class="projects-pill reveal-fade-up">${copy.projects.eyebrow}</div>
+          <h1 class="projects-title font-serif reveal-fade-up">${copy.projects.heading}</h1>
           <p class="projects-subtitle reveal-fade-up">
-            Spaces drawn with intention, built with precision across residential, commercial, and interior sectors.
+            ${copy.projects.intro}
           </p>
         </div>
       </section>
@@ -71,7 +72,7 @@ export const ProjectsView = {
       </section>
 
       <!-- Construction Transformation Section (Interactive Comparison Slider) -->
-      <section class="transformation-section" id="projects-transformation">
+      <section class="transformation-section" id="projects-transformation" ${copy.projects.showComparison ? '' : 'hidden'}>
         <div class="container">
           <div class="transformation-header reveal-fade-up">
             <span class="label-mono">${constructionComparison.tagline}</span>
@@ -90,7 +91,7 @@ export const ProjectsView = {
     if (filteredProjects.length === 0) {
       return `
         <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-xl) 0;">
-          <p style="color: var(--color-text-muted);">No projects found in this category.</p>
+          <p style="color: var(--color-text-muted);">${copy.projects.empty}</p>
         </div>
       `;
     }
@@ -98,16 +99,16 @@ export const ProjectsView = {
     return filteredProjects
       .map(project => {
         return `
-          <article class="blueprint-project-card reveal-fade-up" data-project-id="${project.id}">
+          <a href="/project/${project.id}" data-nav="projects" class="blueprint-project-card reveal-fade-up" data-project-id="${project.id}">
             <div class="blueprint-card-image-wrap">
-              <img src="${project.heroImage}" alt="${project.title}" class="blueprint-card-img" loading="lazy">
+              ${project.heroImage ? `<img src="${project.heroImage}" alt="${project.heroAlt || project.title}" class="blueprint-card-img" loading="lazy">` : ''}
               <span class="blueprint-card-badge">${project.category}</span>
             </div>
             <div class="blueprint-card-meta">
               <h3 class="blueprint-card-title">${project.title}</h3>
               <div class="blueprint-card-location">${project.location}</div>
             </div>
-          </article>
+          </a>
         `;
       })
       .join('');
@@ -121,7 +122,9 @@ export const ProjectsView = {
     const bindCardClicks = () => {
       const cards = document.querySelectorAll('.blueprint-project-card[data-project-id]');
       cards.forEach(card => {
-        card.addEventListener('click', () => {
+        card.addEventListener('click', (event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+          event.preventDefault();
           const projectId = card.getAttribute('data-project-id');
           router.navigate(`/project/${projectId}`, 'projects');
         });
