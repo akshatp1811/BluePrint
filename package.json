@@ -13,7 +13,9 @@
     "preview": "vite preview",
     "start": "npm run start --workspace server",
     "test": "node --test server/test/*.test.js",
-    "backup": "npm run backup --workspace server"
+    "backup": "npm run backup --workspace server",
+    "media:migrate": "npm run media:migrate --workspace server",
+    "cloudinary:verify": "npm run cloudinary:verify --workspace server"
   },
   "devDependencies": {
     "vite": "^8.3.4"

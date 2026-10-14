@@ -9,6 +9,8 @@ export default defineConfig({
     proxy: {
       '/admin': { target: 'http://127.0.0.1:3001', ws: true },
       '/api': 'http://127.0.0.1:4000',
+      '/assets/projects/': 'http://127.0.0.1:4000',
+      '/assets/team/': 'http://127.0.0.1:4000',
       '/media': 'http://127.0.0.1:4000'
     }
   },

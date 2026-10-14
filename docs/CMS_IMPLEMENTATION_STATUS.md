@@ -15,6 +15,7 @@
 - Structured editors for each page, settings, all shared headings/labels, team, projects and categories.
 - Project creation/duplication/order/hiding/removal, optional comparisons, empty photo collections and variable gallery/drawing/render/story counts.
 - Existing-image library, sequential batch upload, image validation/pixel/size/quota limits, four WebP variants, private draft access and dependency-aware deletion.
+- Cloudinary storage configured through a server-only environment variable, authenticated remote assets, protected preview delivery, published photo delivery, resumable migration of local uploads and bundled mockups, and cloud asset manifests in database backups.
 - SQLite drafts with optimistic concurrency; atomic whole-site publications; history and restore-to-draft; old project slug redirects.
 - Published-only public endpoints; project detail fetched separately; refresh/navigation obtains current publication; public ETags.
 - Safe HTML text/attribute escaping; optional-section rendering; progressive image reveal for long galleries; cleanup of global navbar/comparison listeners.
@@ -25,7 +26,7 @@
 ## Intentional first-release boundaries
 
 - Publication is explicitly whole-site: all saved draft changes publish together. Per-entity publication and editor roles remain in the roadmap.
-- Local persistent media storage is implemented. S3/R2 storage, a private original archive, and a durable background image-job queue are not yet implemented. Upload processing is bounded to one request at a time; interrupted/failed uploads can be retried.
+- Cloudinary and local media adapters are implemented. Image delivery uses the backend to preserve draft privacy and stable CMS URLs; direct public CDN delivery is future work. SQLite still requires persistent hosting storage. S3/R2 storage, a private original archive, and a durable background image-job queue are not yet implemented. Upload processing is bounded to one request at a time; interrupted/failed uploads can be retried.
 - Admin frontend/backend use JavaScript with runtime validation; the TypeScript/shared-contract extraction in the architecture plan remains future work.
 - The public archive and project gallery metadata are not server-paginated yet. Images below the fold are lazy/progressively loaded. The 4 MB content request limit protects the initial deployment; paginate metadata before very large collections. There is no fixed photo-count limit.
 - This is not an arbitrary page-layout builder. All current visible text/images are editable, and new projects use the existing detail template. Stored services/process/social data remain inactive until a corresponding design section is added.

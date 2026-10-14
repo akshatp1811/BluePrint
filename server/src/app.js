@@ -5,13 +5,14 @@ import rateLimit from '@fastify/rate-limit';
 import staticFiles from '@fastify/static';
 import sharp from 'sharp';
 import { randomUUID } from 'node:crypto';
-import { mkdir, readFile, readdir, rm, stat } from 'node:fs/promises';
+import { mkdir, readFile, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { openDatabase, published, audit } from './db.js';
 import { hashPassword, verifyPassword, createSession, authenticate } from './auth.js';
 import { validateContent } from './validation.js';
+import { cloudinaryConfig, createCloudinaryClient, createMediaStorage } from './media-storage.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const escape = text => String(text ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -20,10 +21,13 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const now = () => new Date().toISOString();
 
 export async function createApp(options = {}) {
+  const cloudConfig = cloudinaryConfig(options.cloudinaryUrl ?? process.env.CLOUDINARY_URL);
+  const cloudClient = options.cloudinaryClient ?? (cloudConfig ? createCloudinaryClient(cloudConfig) : null);
   const production = options.production ?? process.env.NODE_ENV === 'production';
   const dataDir = options.dataDir || process.env.CMS_DATA_DIR || join(root, '.cms');
   const db = openDatabase(join(dataDir, 'content.sqlite'));
   const mediaDir = join(dataDir, 'media'); await mkdir(mediaDir, { recursive: true });
+  const storage = createMediaStorage(db, mediaDir, cloudClient);
   const app = Fastify({ logger: options.logger ?? false, bodyLimit: 4 * 1024 * 1024, trustProxy: false });
   app.decorate('db', db);
   await app.register(cookie);
@@ -176,7 +180,8 @@ export async function createApp(options = {}) {
   });
   app.post('/api/v1/admin/media', { config: { rateLimit: { max: 30, timeWindow: '1 minute' } } }, async (request, reply) => {
     if (processing) return error(reply, 429, 'An image is processing. Please retry in a moment.'); processing = true;
-    const id = randomUUID(); const directory = join(mediaDir, id);
+    const id = randomUUID(); const storageKey = `/media/${id}`;
+    let stored = false; let uploadingToCloud = false;
     try {
       const file = await request.file(); if (!file) return error(reply, 400, 'Choose a photograph');
       const buffer = await file.toBuffer(); const image = sharp(buffer, { limitInputPixels: 40000000, animated: false }); const metadata = await image.metadata();
@@ -184,15 +189,21 @@ export async function createApp(options = {}) {
       const quota = Number(process.env.CMS_MEDIA_QUOTA_MB || 2048) * 1024 * 1024;
       const used = db.prepare('SELECT COALESCE(SUM(bytes),0) AS bytes FROM media').get().bytes;
       if (used + buffer.length * 3 > quota) return error(reply, 413, 'Media storage quota reached');
-      await mkdir(directory, { recursive: true });
-      for (const width of [320, 640, 1280, 1920]) await sharp(buffer, { limitInputPixels: 40000000 }).rotate().resize({ width, withoutEnlargement: true }).webp({ quality: 82 }).toFile(join(directory, `${width}.webp`));
-      let bytes = 0; for (const name of await readdir(directory)) bytes += (await stat(join(directory, name))).size;
-      if (used + bytes > quota) { await rm(directory, { recursive: true, force: true }); return error(reply, 413, 'Media storage quota reached'); }
+      const variants = {};
+      for (const width of [320, 640, 1280, 1920]) variants[`${width}.webp`] = await sharp(buffer, { limitInputPixels: 40000000 }).rotate().resize({ width, withoutEnlargement: true }).webp({ quality: 82 }).toBuffer();
+      const bytes = Object.values(variants).reduce((sum, variant) => sum + variant.length, 0);
+      if (used + bytes > quota) return error(reply, 413, 'Media storage quota reached');
+      uploadingToCloud = storage.cloud;
+      await storage.write(storageKey, variants); stored = true;
       const safeName = file.filename.replace(/[<>\u0000-\u001f]/g, '').slice(0, 200);
-      db.prepare('INSERT INTO media VALUES(?,?,?,?,?,?,?)').run(id, safeName, 'image/webp', bytes, metadata.width, metadata.height, now());
-      audit(db, request.session.user_id, `media.upload.${id}`); return reply.code(201).send({ id, name: safeName, url: `/media/${id}/1280.webp`, thumbnail: `/media/${id}/320.webp` });
+      db.transaction(() => {
+        db.prepare('INSERT INTO media VALUES(?,?,?,?,?,?,?)').run(id, safeName, 'image/webp', bytes, metadata.width, metadata.height, now());
+        audit(db, request.session.user_id, `media.upload.${id}`);
+      })();
+      return reply.code(201).send({ id, name: safeName, url: `/media/${id}/1280.webp`, thumbnail: `/media/${id}/320.webp` });
     } catch (err) {
-      await rm(directory, { recursive: true, force: true }); return error(reply, err.statusCode || 400, err.code === 'FST_REQ_FILE_TOO_LARGE' ? 'Image exceeds 15 MB' : 'Image upload failed. Use a valid image under 15 MB.');
+      if (stored) await storage.delete(storageKey);
+      return error(reply, err.statusCode || (uploadingToCloud ? 502 : 400), err.code === 'FST_REQ_FILE_TOO_LARGE' ? 'Image exceeds 15 MB' : uploadingToCloud ? 'Cloudinary upload failed. Check the configuration and retry.' : 'Image upload failed. Use a valid image under 15 MB.');
     } finally { processing = false; }
   });
   app.delete('/api/v1/admin/media/:id', async (request, reply) => {
@@ -201,7 +212,8 @@ export async function createApp(options = {}) {
     const documents = [...db.prepare('SELECT content FROM draft').all(), ...db.prepare('SELECT content FROM publications').all()];
     if (documents.some(row => row.content.includes(needle))) return error(reply, 409, 'This image is referenced by a draft or retained publication. Remove its references before deleting.');
     if (!db.prepare('SELECT id FROM media WHERE id=?').get(id)) return error(reply, 404, 'Image not found');
-    await rm(join(mediaDir, id), { recursive: true, force: true }); db.prepare('DELETE FROM media WHERE id=?').run(id); audit(db, request.session.user_id, `media.delete.${id}`); return { ok: true };
+    try { await storage.delete(`/media/${id}`); } catch { return error(reply, 502, 'Cloudinary deletion failed. Retry before removing this image from the library.'); }
+    db.prepare('DELETE FROM media WHERE id=?').run(id); audit(db, request.session.user_id, `media.delete.${id}`); return { ok: true };
   });
   app.get('/media/:id/:variant', async (request, reply) => {
     const { id, variant } = request.params;
@@ -209,12 +221,22 @@ export async function createApp(options = {}) {
     const isPublic = published(db).content.includes(`/media/${id}/`);
     if (!isPublic && !authenticate(db, request)) return error(reply, 404, 'Image not found');
     // Preview image requests outside /api do not carry the session cookie; use the protected proxy endpoint below.
-    try { const buffer = await readFile(join(mediaDir, id, variant)); return reply.type('image/webp').header('Cache-Control', isPublic ? 'public, max-age=3600' : 'no-store').send(buffer); } catch { return error(reply, 404, 'Image not found'); }
+    try { const buffer = await storage.read(`/media/${id}`, variant); return reply.type('image/webp').header('Cache-Control', isPublic ? 'public, max-age=3600' : 'no-store').send(buffer); } catch (err) { return error(reply, err.statusCode || 404, err.statusCode ? err.message : 'Image not found'); }
   });
   app.get('/api/v1/admin/media-file/:id/:variant', async (request, reply) => {
     const { id, variant } = request.params;
     if (!/^[a-f0-9-]{36}$/.test(id) || !/^(320|640|1280|1920)\.webp$/.test(variant)) return error(reply, 404, 'Image not found');
-    try { return reply.type('image/webp').send(await readFile(join(mediaDir, id, variant))); } catch { return error(reply, 404, 'Image not found'); }
+    try { return reply.type('image/webp').send(await storage.read(`/media/${id}`, variant)); } catch (err) { return error(reply, err.statusCode || 404, err.statusCode ? err.message : 'Image not found'); }
+  });
+
+  app.get('/assets/:folder/:name', async (request, reply) => {
+    const { folder, name } = request.params;
+    if (!['projects', 'team'].includes(folder) || !/^[a-zA-Z0-9_.-]+\.(jpe?g|png|webp)$/i.test(name)) return error(reply, 404, 'Image not found');
+    const key = `/assets/${folder}/${name}`;
+    try {
+      const buffer = await storage.read(key, 'original', join(root, 'public/assets', folder, name));
+      return reply.type(storage.has(key) ? 'image/webp' : /\.png$/i.test(name) ? 'image/png' : /\.webp$/i.test(name) ? 'image/webp' : 'image/jpeg').header('Cache-Control', 'public, max-age=3600').send(buffer);
+    } catch (err) { return error(reply, err.statusCode || 404, err.statusCode ? err.message : 'Image not found'); }
   });
 
   const dist = join(root, 'dist'); const adminDist = join(root, 'admin/dist');

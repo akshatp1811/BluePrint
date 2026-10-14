@@ -17,6 +17,7 @@ export function openDatabase(filename) {
     CREATE TABLE IF NOT EXISTS redirects (old_slug TEXT PRIMARY KEY, project_key TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS audit (id INTEGER PRIMARY KEY, user_id INTEGER, action TEXT NOT NULL, created_at TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS media (id TEXT PRIMARY KEY, name TEXT NOT NULL, mime TEXT NOT NULL, bytes INTEGER NOT NULL, width INTEGER NOT NULL, height INTEGER NOT NULL, created_at TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS cloud_media (key TEXT PRIMARY KEY, variants TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS enquiries (id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL, discipline TEXT NOT NULL, message TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'new', created_at TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS notification_jobs (id INTEGER PRIMARY KEY, enquiry_id INTEGER NOT NULL REFERENCES enquiries(id), status TEXT NOT NULL DEFAULT 'pending', attempts INTEGER NOT NULL DEFAULT 0, retry_at INTEGER NOT NULL DEFAULT 0);
     CREATE INDEX IF NOT EXISTS session_expiry ON sessions(expires_at);

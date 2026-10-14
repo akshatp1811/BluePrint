@@ -78,7 +78,20 @@ Copy `server/.env.example` to `server/.env` if you need overrides. Vite variable
 
 Seed import runs only when the database has no draft. Restarting or rebuilding does not reset your edits. Never delete `.cms/` to troubleshoot an application issue unless you intentionally want to discard its data.
 
-The current media implementation uses a persistent local directory, so it works without paid accounts. Original seed photos remain under `public/assets/`. Uploads are normalized to WebP display variants and EXIF is stripped. This first implementation does not archive uploaded originals. If preserving original photography is required, add a private original archive/object-storage adapter before importing final assets.
+Photographs use Cloudinary when `CLOUDINARY_URL` is set in `server/.env`; otherwise new uploads use the persistent local directory. Keep this secret server-side and out of Git and Vite variables. Set the same variable in the hosting platform's server environment when deploying. New uploads are normalized to four WebP display variants with EXIF stripped before storage. This implementation does not archive uploaded originals.
+
+Every CMS photograph picker uses the same pipeline, including heroes, galleries, stories, drawings, renders, team portraits, comparisons and site image settings. Content retains stable `/media/` URLs so existing drafts, publications and restoration continue to work. Cloudinary stores authenticated assets; the backend downloads them using short-lived signed requests after checking access. Draft previews require the owner session. Published images are served through the website backend with browser caching. Signed Cloudinary URLs and credentials are never sent to the frontend. Image delivery therefore still requires the backend to be running.
+
+To migrate existing uploads and bundled project/team photographs, pause uploads/deletions, back up, then run:
+
+```powershell
+npm run backup
+npm run media:migrate
+```
+
+The migration is resumable, skips completed images and preserves local files and every existing content URL. The SQLite `cloud_media` table stores the remote identifiers. Both development and production photo routes fetch migrated photos from Cloudinary. Do not remove this database when deploying; it contains the media mappings as well as the CMS content. If Cloudinary is unavailable, cloud image routes return a temporary error rather than silently serving an old local copy.
+
+Verify the configured account with `npm run cloudinary:verify`. It uses a temporary isolated CMS database, uploads a small generated image, verifies all four previews and publication delivery, and deletes its Cloudinary test assets. It does not edit your CMS content. Restart the backend after changing `server/.env`.
 
 ## Verify and back up
 
@@ -90,7 +103,7 @@ npm run backup
 
 Tests use isolated temporary databases and do not edit your local content. They cover seed preservation, authentication/CSRF, validation, version conflicts, draft/public separation, galleries, media privacy, restoration, redirects and persisted enquiries.
 
-The backup command uses SQLite's online backup operation and copies media into a timestamped bundle. Run it while media upload/deletion and publication are idle so the file copy and database snapshot describe a consistent collection. Copy finished bundles off the computer; an on-disk copy alone does not protect against disk loss.
+The backup command uses SQLite's online backup operation and copies local media into a timestamped bundle. A `cloud-media-manifest.json` records remote assets without credentials; Cloudinary image bytes are not included. Restoring cloud images requires the same Cloudinary account and its server credentials. Back up remote photography independently as well. Run backups while media upload/deletion and publication are idle so the collection is consistent. Copy finished bundles off the computer; an on-disk copy alone does not protect against disk loss.
 
 To restore: stop the backend, preserve the current `.cms/` directory, copy a selected bundle's `content.sqlite` and `media/` to a new empty persistent directory, set the absolute `CMS_DATA_DIR` to it, then start the backend and verify content/media. Do not merge a backup database into a directory containing old SQLite WAL/SHM files. Revoke restored sessions before reusing a backup on a different host:
 
@@ -102,4 +115,4 @@ node --input-type=module -e "import {openDatabase} from './server/src/db.js'; im
 
 Select a Node host with persistent local storage and HTTPS. Set `NODE_ENV=production`, explicit permitted `CMS_ORIGINS`, `CMS_PUBLIC_URL`, a persistent absolute `CMS_DATA_DIR`, and suitable storage quota. Initialize the owner locally first; production never opens a registration form. Bind `HOST` according to the deployment's reverse-proxy/container arrangement. Production cookies require HTTPS.
 
-Confirm real copy/photography, email sender/recipient, retention policy and resource capacity. Add automated off-host backups and a restore drill. The current release is one owner and one backend instance; multiple editors/roles, MFA/recovery, object-storage integration, automatic retention and full CI are tracked in the production roadmap, not claimed as implemented.
+Confirm real copy/photography, email sender/recipient, retention policy and resource capacity. Add automated off-host backups and a restore drill. The current release is one owner and one backend instance; multiple editors/roles, MFA/recovery, automatic retention and full CI are tracked in the production roadmap, not claimed as implemented. Cloudinary handles image storage; the SQLite database still requires persistent disk storage.
