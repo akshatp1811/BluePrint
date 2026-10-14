@@ -2,15 +2,17 @@
    BLUE PRINT - Navigation Bar Component
    ========================================================================== */
 
-import { studioInfo } from '../data/content.js';
+import { studioInfo, copy } from '../data/content.js';
 
 export const Navbar = {
+  cleanup: null,
+  destroy() { this.cleanup?.(); this.cleanup = null; },
   render(activeRoute = 'home') {
     const links = [
-      { id: 'home', label: 'Home', path: '/' },
-      { id: 'about', label: 'About', path: '/about' },
-      { id: 'projects', label: 'Projects', path: '/projects' },
-      { id: 'contact', label: 'Contact', path: '/contact' }
+      { id: 'home', label: copy.nav.home, path: '/' },
+      { id: 'about', label: copy.nav.about, path: '/about' },
+      { id: 'projects', label: copy.nav.projects, path: '/projects' },
+      { id: 'contact', label: copy.nav.contact, path: '/contact' }
     ];
 
     const desktopLinksMarkup = links
@@ -42,7 +44,7 @@ export const Navbar = {
         <div class="container navbar-inner">
           <!-- Logo matching reference -->
           <a href="/" data-nav="home" class="logo">
-            <span class="logo-blue">Blueprint</span> <span class="logo-dark">Design Studio</span>
+            ${copy.branding.logoImage ? `<img class="cms-logo" src="${copy.branding.logoImage}" alt="${copy.branding.logoAlt}">` : `<span class="logo-blue">${copy.branding.logoFirst}</span> <span class="logo-dark">${copy.branding.logoSecond}</span>`}
           </a>
 
           <!-- Desktop Navigation -->
@@ -52,11 +54,11 @@ export const Navbar = {
 
           <!-- Right side CTA Button -->
           <div class="nav-cta">
-            <a href="/contact" data-nav="contact" class="btn-build-with-us">Build with Us</a>
+            <a href="${copy.nav.ctaUrl}" data-nav="contact" class="btn-build-with-us">${copy.nav.cta}</a>
           </div>
 
           <!-- Mobile Toggle Hamburger -->
-          <button class="mobile-toggle" id="mobile-menu-toggle" aria-label="Toggle Menu" aria-expanded="false">
+          <button class="mobile-toggle" id="mobile-menu-toggle" aria-label="${copy.nav.menuLabel}" aria-expanded="false">
             <span></span>
             <span></span>
             <span></span>
@@ -69,7 +71,7 @@ export const Navbar = {
             ${mobileLinksMarkup}
           </ul>
           <div class="mobile-cta-wrap">
-            <a href="/contact" data-nav="contact" class="btn-build-with-us">Build with Us</a>
+            <a href="${copy.nav.ctaUrl}" data-nav="contact" class="btn-build-with-us">${copy.nav.cta}</a>
           </div>
         </div>
       </nav>
@@ -92,6 +94,7 @@ export const Navbar = {
       }
     };
     window.addEventListener('scroll', handleScroll);
+    this.cleanup = () => window.removeEventListener('scroll', handleScroll);
     handleScroll();
 
     // 2. Mobile Menu Toggle Action

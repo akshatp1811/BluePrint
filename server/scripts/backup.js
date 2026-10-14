@@ -1,0 +1,16 @@
+import { openDatabase } from '../src/db.js';
+import { resolve, dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { mkdir, cp, rename, writeFile } from 'node:fs/promises';
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+const directory = process.env.CMS_DATA_DIR || join(root, '.cms');
+const backup = join(directory, 'backups', new Date().toISOString().replace(/[:.]/g, '-'));
+const staging = `${backup}.partial`; await mkdir(staging, { recursive: true });
+const db = openDatabase(join(directory, 'content.sqlite'));
+await db.backup(join(staging, 'content.sqlite'));
+const cloudMedia = db.prepare('SELECT key,variants FROM cloud_media').all();
+await writeFile(join(staging, 'cloud-media-manifest.json'), JSON.stringify(cloudMedia.map(row => ({ key: row.key, variants: JSON.parse(row.variants) })), null, 2));
+db.close();
+await cp(join(directory, 'media'), join(staging, 'media'), { recursive: true });
+await rename(staging, backup); console.log(`Backup saved: ${backup}. Copy this directory off the machine.`);
+if (cloudMedia.length) console.log('Cloudinary assets are referenced in the manifest, not copied into this backup. Keep the same Cloudinary account and back up its images separately.');

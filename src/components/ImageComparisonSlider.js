@@ -2,7 +2,10 @@
    BLUE PRINT - Interactive Before / After Comparison Slider Component
    ========================================================================== */
 
+import { copy } from '../data/content.js';
 export const ImageComparisonSlider = {
+  cleanups: [],
+  destroy() { this.cleanups.splice(0).forEach(cleanup => cleanup()); },
   /**
    * Generates the markup for the before/after image comparison slider.
    */
@@ -36,7 +39,7 @@ export const ImageComparisonSlider = {
           </div>
 
           <!-- Draggable Vertical Divider & Handle -->
-          <div class="comparison-divider" role="slider" tabindex="0" aria-label="Before and after comparison slider" aria-valuenow="${initialPosition}" aria-valuemin="0" aria-valuemax="100">
+          <div class="comparison-divider" role="slider" tabindex="0" aria-label="${copy.accessibility.comparison}" aria-valuenow="${initialPosition}" aria-valuemin="0" aria-valuemax="100">
             <div class="comparison-divider-line"></div>
             <div class="comparison-handle" aria-hidden="true">
               <svg class="comparison-handle-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -119,6 +122,11 @@ export const ImageComparisonSlider = {
       window.addEventListener('pointermove', onPointerMove);
       window.addEventListener('pointerup', onPointerUp);
       window.addEventListener('pointercancel', onPointerUp);
+      this.cleanups.push(() => {
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+      });
 
       // Keyboard accessibility (Arrow keys, Home, End)
       divider.addEventListener('keydown', (e) => {

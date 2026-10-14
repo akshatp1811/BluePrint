@@ -2,7 +2,7 @@
    BLUE PRINT - Project Detail Page View
    ========================================================================== */
 
-import { projects } from '../data/content.js';
+import { projects, copy, loadProject } from '../data/content.js';
 import { setupScrollReveals } from '../app.js';
 import { Lightbox } from '../components/Lightbox.js';
 import { ImageComparisonSlider } from '../components/ImageComparisonSlider.js';
@@ -10,29 +10,29 @@ import { ImageComparisonSlider } from '../components/ImageComparisonSlider.js';
 export const ProjectDetailView = {
   async render(params) {
     const projectId = params.id;
-    const projectIndex = projects.findIndex(p => p.id === projectId);
+    const project = await loadProject(projectId);
     
     // Fallback if project is not found
-    if (projectIndex === -1) {
+    if (!project) {
       return `
         <div class="container" style="padding: var(--space-xxl) 0; text-align: center;">
-          <h2>Project Not Found</h2>
-          <p>The requested project does not exist.</p>
-          <a href="/projects" data-nav="projects" class="btn btn-primary" style="margin-top: 24px;">Back to Portfolio</a>
+          <h2>${copy.detail.missingHeading}</h2>
+          <p>${copy.detail.missingText}</p>
+          <a href="/projects" data-nav="projects" class="btn btn-primary" style="margin-top: 24px;">${copy.detail.missingLink}</a>
         </div>
       `;
     }
 
-    const project = projects[projectIndex];
+    const sectionCopy = { ...copy.detail, ...(project.sectionCopy || {}) };
  
     // Assemble Specs Grid
     const specs = [
-      { label: 'Client', val: project.client },
-      { label: 'Location', val: project.location },
-      { label: 'Year', val: project.year },
-      { label: 'Area', val: project.area },
-      { label: 'Project Type', val: project.category },
-      { label: 'Status', val: project.status }
+      { label: sectionCopy.client, val: project.client },
+      { label: sectionCopy.location, val: project.location },
+      { label: sectionCopy.year, val: project.year },
+      { label: sectionCopy.area, val: project.area },
+      { label: sectionCopy.category, val: project.category },
+      { label: sectionCopy.status, val: project.status }
     ];
 
     const specsMarkup = specs
@@ -52,8 +52,8 @@ export const ProjectDetailView = {
       .map((img, index) => {
         const colClass = colPatterns[index % colPatterns.length];
         return `
-          <div class="gallery-item ${colClass} reveal-fade-up" data-gallery-index="${index}">
-            <img src="${img.url}" alt="${img.caption || project.title}">
+          <div class="gallery-item ${colClass} reveal-fade-up" data-gallery-index="${index}" ${index >= 12 ? 'hidden' : ''}>
+            <img ${index >= 12 ? 'data-src' : 'src'}="${img.url}" alt="${img.alt || img.caption || project.title}" loading="lazy">
           </div>
         `;
       })
@@ -65,7 +65,7 @@ export const ProjectDetailView = {
         return `
           <div class="drawing-card reveal-fade-up" data-drawing-index="${index}">
             <div class="drawing-image-wrapper">
-              <img src="${dwg.url}" alt="${dwg.name}">
+              <img src="${dwg.url}" alt="${dwg.alt || dwg.name}" loading="lazy" style="object-fit: contain;">
             </div>
             <div class="drawing-title">${dwg.name}</div>
           </div>
@@ -79,7 +79,7 @@ export const ProjectDetailView = {
         return `
           <div class="render-card reveal-fade-up" data-render-index="${index}">
             <div class="render-image-wrapper">
-              <img src="${render.url}" alt="${render.name}">
+              <img src="${render.url}" alt="${render.alt || render.name}" loading="lazy">
             </div>
             <div class="render-title">${render.name}</div>
           </div>
@@ -96,8 +96,8 @@ export const ProjectDetailView = {
         afterImage: project.comparison.afterImage,
         beforeAlt: project.comparison.beforeAlt,
         afterAlt: project.comparison.afterAlt,
-        beforeLabel: project.comparison.beforeLabel || 'BEFORE',
-        afterLabel: project.comparison.afterLabel || 'AFTER',
+        beforeLabel: project.comparison.beforeLabel || sectionCopy.before,
+        afterLabel: project.comparison.afterLabel || sectionCopy.after,
         caption: project.comparison.caption
       });
 
@@ -105,9 +105,9 @@ export const ProjectDetailView = {
         <section class="transformation-section">
           <div class="container">
             <div class="reveal-fade-up" style="max-width: 600px; margin-bottom: var(--space-xl);">
-              <span class="label-mono">Transformation</span>
-              <h2>Construction vs Completion</h2>
-              <p class="section-subtitle">Slide to compare the active building phase with the realized architectural volume.</p>
+              <span class="label-mono">${sectionCopy.comparisonEyebrow}</span>
+              <h2>${sectionCopy.comparisonHeading}</h2>
+              <p class="section-subtitle">${sectionCopy.comparisonIntro}</p>
             </div>
             <div class="reveal-fade-up delay-1">
               ${sliderHtml}
@@ -122,15 +122,13 @@ export const ProjectDetailView = {
       .map((story, index) => {
         const isAlternate = index % 2 !== 0;
         return `
-          <div class="story-row ${isAlternate ? 'alternate' : ''}">
+          <div class="story-row ${isAlternate ? 'alternate' : ''} ${story.image ? '' : 'story-text-only'}">
             <div class="story-content reveal-fade-up">
-              <span class="label-mono">${project.title} Story</span>
+              <span class="label-mono">${sectionCopy.storyLabel.replace('{projectTitle}', project.title)}</span>
               <h2 class="story-heading">${story.heading}</h2>
               <p class="story-text">${story.text}</p>
             </div>
-            <div class="story-image-wrapper reveal-image-clip">
-              <img src="${story.image}" alt="${story.heading}" class="story-image" style="width: 100%; height: 100%; object-fit: cover;">
-            </div>
+            ${story.image ? `<div class="story-image-wrapper reveal-image-clip"><img src="${story.image}" alt="${story.alt || story.heading}" class="story-image" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;"></div>` : ''}
           </div>
         `;
       })
@@ -149,10 +147,10 @@ export const ProjectDetailView = {
       <div class="scale-ruler-bar" aria-hidden="true"></div>
 
       <!-- Main Project Image Feature -->
-      <section class="detail-main-image-section">
+      <section class="detail-main-image-section" ${project.heroImage ? '' : 'hidden'}>
         <div class="container">
           <div class="detail-main-image-wrap reveal-fade-up">
-            <img src="${project.heroImage}" alt="${project.title}" class="detail-main-img">
+            ${project.heroImage ? `<img src="${project.heroImage}" alt="${project.heroAlt || project.title}" class="detail-main-img">` : ''}
           </div>
         </div>
       </section>
@@ -164,40 +162,41 @@ export const ProjectDetailView = {
             ${specsMarkup}
           </div>
           <div class="reveal-fade-up delay-1">
-            <h3 style="margin-bottom: var(--space-sm); font-weight: 300;">The Project Brief</h3>
+            <h3 style="margin-bottom: var(--space-sm); font-weight: 300;">${sectionCopy.brief}</h3>
             <p class="description-text">${project.description}</p>
           </div>
         </div>
       </section>
 
       <!-- Editorial Story Block -->
-      <section class="project-story-section">
+      <section class="project-story-section" ${project.story.length ? '' : 'hidden'}>
         <div class="container">
           ${storyMarkup}
         </div>
       </section>
 
       <!-- Image Gallery Section -->
-      <section class="detail-gallery-section bg-secondary">
+      <section class="detail-gallery-section bg-secondary" ${project.galleryImages.length ? '' : 'hidden'}>
         <div class="container">
           <div class="reveal-fade-up" style="max-width: 600px; margin-bottom: var(--space-xl);">
-            <span class="label-mono">Gallery</span>
-            <h2>Project Gallery</h2>
-            <p class="section-subtitle">A collection of exterior, interior, and macro details capturing the spatial texture.</p>
+            <span class="label-mono">${sectionCopy.galleryEyebrow}</span>
+            <h2>${sectionCopy.galleryHeading}</h2>
+            <p class="section-subtitle">${sectionCopy.galleryIntro}</p>
           </div>
           <div class="gallery-collage">
             ${galleryMarkup}
           </div>
+          ${project.galleryImages.length > 12 ? `<button class="btn btn-blueprint" id="gallery-load-more">${copy.interface.loadMore}</button>` : ''}
         </div>
       </section>
 
       <!-- Technical Drawings Section -->
-      <section class="technical-drawings-section">
+      <section class="technical-drawings-section" ${project.drawings.length ? '' : 'hidden'}>
         <div class="container">
           <div class="reveal-fade-up" style="max-width: 600px; margin-bottom: var(--space-lg);">
-            <span class="label-mono">Drafts</span>
-            <h2>The Architectural Design</h2>
-            <p class="section-subtitle">Architectural plans, sections, and site drawings defining the structural geometry.</p>
+            <span class="label-mono">${sectionCopy.drawingsEyebrow}</span>
+            <h2>${sectionCopy.drawingsHeading}</h2>
+            <p class="section-subtitle">${sectionCopy.drawingsIntro}</p>
           </div>
           <div class="drawings-grid">
             ${drawingsMarkup}
@@ -206,12 +205,12 @@ export const ProjectDetailView = {
       </section>
 
       <!-- 3D Renders / Visualizations Section -->
-      <section class="renders-section">
+      <section class="renders-section" ${project.renders.length ? '' : 'hidden'}>
         <div class="container">
           <div class="reveal-fade-up" style="max-width: 600px; margin-bottom: var(--space-lg);">
-            <span class="label-mono">Visualization</span>
-            <h2>Visualizing the Space</h2>
-            <p class="section-subtitle">Volumetric massing renders and 3D modeling drafts prepared during the development phase.</p>
+            <span class="label-mono">${sectionCopy.rendersEyebrow}</span>
+            <h2>${sectionCopy.rendersHeading}</h2>
+            <p class="section-subtitle">${sectionCopy.rendersIntro}</p>
           </div>
           <div class="renders-grid">
             ${rendersMarkup}
@@ -231,6 +230,12 @@ export const ProjectDetailView = {
 
     // 1. Fire Scroll Reveal Observer
     setupScrollReveals();
+    document.getElementById('gallery-load-more')?.addEventListener('click', event => {
+      const hidden = [...document.querySelectorAll('.gallery-item[hidden]')];
+      hidden.slice(0, 12).forEach(item => { item.hidden = false; const image = item.querySelector('img'); image.src = image.dataset.src; });
+      if (hidden.length <= 12) event.currentTarget.hidden = true;
+      setupScrollReveals();
+    });
 
     // 2. Lightbox bind for main image gallery collage
     const galleryItems = document.querySelectorAll('.gallery-item[data-gallery-index]');

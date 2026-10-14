@@ -4,6 +4,7 @@
 
 import { Router } from './router.js';
 import { Lightbox } from './components/Lightbox.js';
+import { loadContent } from './data/content.js';
 
 // Import Page Views
 import { HomeView } from './views/HomeView.js';
@@ -42,6 +43,7 @@ const routes = {
 };
 
 // Global scroll-revealing trigger helper using IntersectionObserver
+let scrollObserver;
 export function setupScrollReveals() {
   const observerOptions = {
     root: null,
@@ -49,7 +51,8 @@ export function setupScrollReveals() {
     threshold: 0.05
   };
 
-  const observer = new IntersectionObserver((entries, obs) => {
+  scrollObserver?.disconnect();
+  const observer = scrollObserver = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('revealed');
@@ -64,11 +67,18 @@ export function setupScrollReveals() {
 }
 
 // Kick off when DOM is fully parsed
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const appMount = document.getElementById('app');
   const navbarMount = document.getElementById('navbar-container');
   const footerMount = document.getElementById('footer-container');
 
+  try {
+    await loadContent();
+  } catch (error) {
+    const message = document.createElement('p'); message.textContent = error.message;
+    const retry = document.createElement('button'); retry.textContent = 'Retry'; retry.onclick = () => location.reload();
+    appMount.replaceChildren(message, retry); return;
+  }
   // Initialize Lightbox Singleton modal structures
   Lightbox.init();
 

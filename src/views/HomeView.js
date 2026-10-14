@@ -3,28 +3,28 @@
    Modeled precisely after reference blueprint design language
    ========================================================================== */
 
-import { projects, studioInfo, constructionComparison } from '../data/content.js';
+import { projects, studioInfo, constructionComparison, copy } from '../data/content.js';
 import { setupScrollReveals } from '../app.js';
 import { ImageComparisonSlider } from '../components/ImageComparisonSlider.js';
 
 export const HomeView = {
   async render() {
     // Top 3 featured projects matching reference layout
-    const featuredProjects = projects.slice(0, 3);
+    const featuredProjects = copy.home.featuredIds.map(id => projects.find(p => p.id === id)).filter(Boolean);
 
     const projectCardsMarkup = featuredProjects
       .map(project => {
         return `
-          <article class="blueprint-project-card reveal-fade-up" data-project-id="${project.id}">
+          <a href="/project/${project.id}" data-nav="projects" class="blueprint-project-card reveal-fade-up" data-project-id="${project.id}">
             <div class="blueprint-card-image-wrap">
-              <img src="${project.heroImage}" alt="${project.title}" class="blueprint-card-img" loading="lazy">
+              ${project.heroImage ? `<img src="${project.heroImage}" alt="${project.heroAlt || project.title}" class="blueprint-card-img" loading="lazy">` : ''}
               <span class="blueprint-card-badge">${project.category}</span>
             </div>
             <div class="blueprint-card-meta">
               <h3 class="blueprint-card-title">${project.title}</h3>
               <div class="blueprint-card-location">${project.location}</div>
             </div>
-          </article>
+          </a>
         `;
       })
       .join('');
@@ -51,8 +51,8 @@ export const HomeView = {
           </div>
           
           <h1 class="hero-headline font-serif reveal-fade-up">
-            Spaces drawn with intention,<br>
-            <span class="highlight-blue">built</span> with precision
+            ${copy.home.headlineFirst}<br>
+            <span class="highlight-blue">${copy.home.headlineEmphasis}</span>${copy.home.headlineLast}
           </h1>
 
           <p class="hero-subline reveal-fade-up">
@@ -60,8 +60,8 @@ export const HomeView = {
           </p>
 
           <div class="hero-cta-wrap reveal-fade-up">
-            <a href="/projects" data-nav="projects" class="btn btn-blueprint">View Our Work</a>
-            <a href="/contact" data-nav="contact" class="btn-build-with-us">Build with Us</a>
+            <a href="${copy.home.workUrl}" data-nav="projects" class="btn btn-blueprint">${copy.home.workButton}</a>
+            <a href="${copy.home.contactUrl}" data-nav="contact" class="btn-build-with-us">${copy.home.contactButton}</a>
           </div>
         </div>
       </section>
@@ -73,8 +73,8 @@ export const HomeView = {
       <section class="blueprint-work-section" id="portfolio">
         <div class="container">
           <div class="work-section-header reveal-fade-up">
-            <h2 class="work-section-title">Selected Work</h2>
-            <a href="/projects" data-nav="projects" class="work-view-all">View All Projects</a>
+            <h2 class="work-section-title">${copy.home.workHeading}</h2>
+            <a href="/projects" data-nav="projects" class="work-view-all">${copy.home.allProjects}</a>
           </div>
 
           <div class="blueprint-work-grid">
@@ -84,7 +84,7 @@ export const HomeView = {
       </section>
 
       <!-- Construction Transformation Section (Interactive Comparison Slider) -->
-      <section class="transformation-section" id="transformation">
+      <section class="transformation-section" id="transformation" ${copy.home.showComparison ? '' : 'hidden'}>
         <div class="container">
           <div class="transformation-header reveal-fade-up">
             <span class="label-mono">${constructionComparison.tagline}</span>
@@ -98,7 +98,7 @@ export const HomeView = {
       </section>
 
       <!-- Editorial Quote / Testimonial Section -->
-      <section class="blueprint-quote-section">
+      <section class="blueprint-quote-section" ${copy.home.showQuote ? '' : 'hidden'}>
         <div class="container quote-container reveal-fade-up">
           <blockquote class="editorial-quote font-serif">
             ${studioInfo.quote.text}
@@ -118,7 +118,9 @@ export const HomeView = {
     // 2. Setup Project Tile Links Routing
     const projectCards = document.querySelectorAll('.blueprint-project-card');
     projectCards.forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        event.preventDefault();
         const projectId = card.getAttribute('data-project-id');
         router.navigate(`/project/${projectId}`, 'projects');
       });

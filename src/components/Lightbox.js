@@ -2,6 +2,7 @@
    BLUE PRINT - Fullscreen Image Lightbox Component (Singleton)
    ========================================================================== */
 
+import { copy, plainText } from '../data/content.js';
 export const Lightbox = {
   images: [],
   currentIndex: 0,
@@ -11,10 +12,10 @@ export const Lightbox = {
     return `
       <div class="lightbox" id="app-lightbox" aria-hidden="true" role="dialog">
         <!-- Close button -->
-        <button class="lightbox-close" id="lightbox-close-btn" aria-label="Close Lightbox"></button>
+        <button class="lightbox-close" id="lightbox-close-btn" aria-label="${copy.accessibility.lightboxClose}"></button>
 
         <!-- Previous Navigation -->
-        <button class="lightbox-nav lightbox-prev" id="lightbox-prev-btn" aria-label="Previous Image">
+        <button class="lightbox-nav lightbox-prev" id="lightbox-prev-btn" aria-label="${copy.accessibility.lightboxPrevious}">
           <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" /></svg>
         </button>
 
@@ -24,7 +25,7 @@ export const Lightbox = {
         </div>
 
         <!-- Next Navigation -->
-        <button class="lightbox-nav lightbox-next" id="lightbox-next-btn" aria-label="Next Image">
+        <button class="lightbox-nav lightbox-next" id="lightbox-next-btn" aria-label="${copy.accessibility.lightboxNext}">
           <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>
         </button>
 
@@ -124,9 +125,9 @@ export const Lightbox = {
     imgEl.style.opacity = '0.3';
     
     setTimeout(() => {
-      imgEl.src = currentImage.url;
-      imgEl.alt = currentImage.caption || '';
-      if (captionEl) captionEl.textContent = currentImage.caption || '';
+      imgEl.src = plainText(currentImage.url);
+      imgEl.alt = plainText(currentImage.alt || currentImage.caption || '');
+      if (captionEl) captionEl.textContent = plainText(currentImage.caption || '');
       if (counterEl) counterEl.textContent = `${this.currentIndex + 1} / ${this.images.length}`;
       
       imgEl.style.transform = 'scale(1)';
