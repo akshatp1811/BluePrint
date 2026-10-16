@@ -13,6 +13,7 @@ export const Footer = {
             <a href="/" data-nav="home" class="footer-studio-name">${copy.footer.name}</a>
             <div class="footer-location-sub">${copy.footer.location}</div>
           </div>
+          <a href="/admin/" class="footer-admin-link">Are you an admin?</a>
           <div class="footer-right">
             <a href="mailto:${studioInfo.contact.email}" class="footer-email-link">${studioInfo.contact.email}</a>
           </div>
