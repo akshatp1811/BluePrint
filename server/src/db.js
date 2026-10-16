@@ -23,6 +23,10 @@ export function openDatabase(filename) {
     CREATE INDEX IF NOT EXISTS session_expiry ON sessions(expires_at);
   `);
   db.transaction(() => {
+    if (!db.prepare('PRAGMA table_info(users)').all().some(column => column.name === 'username')) {
+      db.exec('ALTER TABLE users ADD COLUMN username TEXT');
+    }
+    db.exec('CREATE UNIQUE INDEX IF NOT EXISTS users_username ON users(username COLLATE NOCASE)');
     if (!db.prepare('SELECT version FROM migrations WHERE version=1').get()) db.prepare('INSERT INTO migrations VALUES(1,?)').run(new Date().toISOString());
     if (!db.prepare('SELECT id FROM draft').get()) {
       const content = JSON.stringify(createSeed()); const now = new Date().toISOString();

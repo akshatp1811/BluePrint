@@ -69,15 +69,18 @@ export async function createApp(options = {}) {
     if (!user) return error(reply, 409, 'An owner account already exists');
     return createSession(db, user, reply, production);
   });
-  app.post('/api/v1/admin/auth/login', { schema: credentials, config: { rateLimit: { max: 8, timeWindow: '1 minute' } } }, async (request, reply) => {
-    const user = db.prepare('SELECT * FROM users WHERE email=?').get(request.body.email.trim().toLowerCase());
+  const loginCredentials = { body: { type: 'object', required: ['password'], oneOf: [{ required: ['username'] }, { required: ['email'] }], additionalProperties: false, properties: { username: { type: 'string', minLength: 1, maxLength: 254 }, email: { type: 'string', minLength: 1, maxLength: 254 }, password: { type: 'string', minLength: 1, maxLength: 256 } } } };
+  app.post('/api/v1/admin/auth/login', { schema: loginCredentials, config: { rateLimit: { max: 8, timeWindow: '1 minute' } } }, async (request, reply) => {
+    const user = request.body.username !== undefined
+      ? db.prepare('SELECT * FROM users WHERE username=? COLLATE NOCASE').get(request.body.username.trim())
+      : db.prepare('SELECT * FROM users WHERE email=?').get(request.body.email.trim().toLowerCase());
     const valid = await verifyPassword(request.body.password, user?.password || '0123456789abcdef0123456789abcdef:'.concat('00'.repeat(64)));
-    if (!user || !valid) { audit(db, null, 'login.failed'); return error(reply, 401, 'Email or password is incorrect'); }
+    if (!user || !valid) { audit(db, null, 'login.failed'); return error(reply, 401, 'Username or password is incorrect'); }
     audit(db, user.id, 'login.success'); return createSession(db, user, reply, production);
   });
   app.get('/api/v1/admin/auth/me', async (request, reply) => {
     const session = authenticate(db, request); if (!session) return error(reply, 401, 'Please sign in');
-    return { email: session.email, csrf: session.csrf, expires: session.expires_at };
+    return { email: session.email, username: session.username, csrf: session.csrf, expires: session.expires_at };
   });
   app.post('/api/v1/admin/auth/logout', async (request, reply) => {
     const session = authenticate(db, request); if (!session || request.headers['x-csrf-token'] !== session.csrf) return error(reply, 403, 'Invalid security token');

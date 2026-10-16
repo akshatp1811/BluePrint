@@ -1,8 +1,10 @@
 import { createApp } from './app.js';
 import { startNotifications } from './notifications.js';
+import { seedDemoAdmin } from './seed-admin.js';
 
 export async function startServer() {
   const app = await createApp({ logger: true });
+  if (process.env.CMS_SEED_DEMO_ADMIN !== 'false') await seedDemoAdmin(app.db);
   startNotifications(app);
 
   const rawPort = process.env.PORT || 4000;

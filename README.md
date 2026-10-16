@@ -31,7 +31,7 @@ npm run dev:api
 
 Choose the combined command or the separate-terminal commands, not both. `npm run preview` previews the public build only; use `npm run build` followed by `npm start` for the complete built website and CMS on port 4000.
 
-Open the admin and create your owner account once. Choose your own password of at least 12 characters. There is no default account or password. First-owner web setup is allowed only on loopback in development; production disables it.
+For the demo, run `npm start` after building to seed the administrator once: username `admin`, password `admin@123`. The seed reuses the existing owner, preserves content, and never resets a later password change. See [demo login and future password recovery](docs/ADMIN_LOGIN.md). The separate development API command does not bootstrap the account; run `npm start` once first. First-owner web setup remains available only on loopback in development.
 
 The database is created on the first backend start, with the current website's exact seed content. Seven projects, six stored team members, four visible members, three featured projects, original filter choices, and current photographs are preserved. No extra sample projects are added. The photographs are existing mockups until you replace them.
 
@@ -113,6 +113,6 @@ node --input-type=module -e "import {openDatabase} from './server/src/db.js'; im
 
 ## Before public deployment
 
-Select a Node host with persistent local storage and HTTPS. Set `NODE_ENV=production`, explicit permitted `CMS_ORIGINS`, `CMS_PUBLIC_URL`, a persistent absolute `CMS_DATA_DIR`, and suitable storage quota. Initialize the owner locally first; production never opens a registration form. Bind `HOST` according to the deployment's reverse-proxy/container arrangement. Production cookies require HTTPS.
+Select a Node host with persistent local storage and HTTPS. Set `NODE_ENV=production`, explicit permitted `CMS_ORIGINS`, `CMS_PUBLIC_URL`, a persistent absolute `CMS_DATA_DIR`, and suitable storage quota. The demo administrator is initialized once at server startup unless `CMS_SEED_DEMO_ADMIN=false`; production never opens a registration form. After the demo, change the password through Account and disable demo bootstrapping. Bind `HOST` according to the deployment's reverse-proxy/container arrangement. Production cookies require HTTPS.
 
 Confirm real copy/photography, email sender/recipient, retention policy and resource capacity. Add automated off-host backups and a restore drill. The current release is one owner and one backend instance; multiple editors/roles, MFA/recovery, automatic retention and full CI are tracked in the production roadmap, not claimed as implemented. Cloudinary handles image storage; the SQLite database still requires persistent disk storage.

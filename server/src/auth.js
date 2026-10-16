@@ -18,10 +18,10 @@ export function createSession(db, user, reply, secure) {
   db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
   db.prepare('INSERT INTO sessions VALUES(?,?,?,?)').run(hashToken(token), user.id, csrf, expires);
   reply.setCookie('blueprint_session', token, { httpOnly: true, secure, sameSite: 'strict', path: '/api', maxAge: 8 * 60 * 60 });
-  return { email: user.email, csrf, expires };
+  return { email: user.email, username: user.username, csrf, expires };
 }
 export function authenticate(db, request) {
   const token = request.cookies.blueprint_session;
   if (!token) return null;
-  return db.prepare('SELECT s.*,u.email FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token=? AND s.expires_at>?').get(hashToken(token), Date.now());
+  return db.prepare('SELECT s.*,u.email,u.username FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token=? AND s.expires_at>?').get(hashToken(token), Date.now());
 }
