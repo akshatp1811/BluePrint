@@ -11,6 +11,11 @@ The seed reuses the existing owner (preserving their email and ID), sets the dem
 password as a salted scrypt hash, and revokes that owner's existing sessions.
 On an empty database it creates an owner with an internal `.invalid` email.
 CMS content and media are preserved. Back up the production database before deployment.
+The deployed origin `https://deepskyblue-okapi-398996.hostingersite.com` is
+explicitly permitted for login and CMS writes. Additional trusted origins come
+from `CMS_ORIGINS` (comma-separated) and `CMS_PUBLIC_URL`; spaces, trailing slashes
+and URL paths in these settings are normalized to their origin. Keep
+`CMS_PUBLIC_URL` configured for features that generate absolute public URLs.
 The `demoAdminSeedV1` settings marker prevents subsequent restarts from resetting
 the password. Password changes still require at least 12 characters.
 Set `CMS_SEED_DEMO_ADMIN=false` after the demo; this disables bootstrap for future

@@ -34,13 +34,22 @@ export async function createApp(options = {}) {
   await app.register(multipart, { limits: { fileSize: 15 * 1024 * 1024, files: 1, fields: 0 } });
   await app.register(rateLimit, { global: false });
   const allowSetup = options.allowSetup ?? !production;
-  const origins = (process.env.CMS_ORIGINS || 'http://127.0.0.1:3000,http://127.0.0.1:3001,http://localhost:3000,http://localhost:3001,http://127.0.0.1:4000,http://localhost:4000').split(',');
+  const origins = new Set([
+    'https://deepskyblue-okapi-398996.hostingersite.com',
+    process.env.CMS_PUBLIC_URL,
+    ...(process.env.CMS_ORIGINS || 'http://127.0.0.1:3000,http://127.0.0.1:3001,http://localhost:3000,http://localhost:3001,http://127.0.0.1:4000,http://localhost:4000').split(',')
+  ].filter(Boolean).flatMap(value => {
+    try {
+      const url = new URL(value.trim());
+      return ['http:', 'https:'].includes(url.protocol) ? [url.origin] : [];
+    } catch { return []; }
+  }));
 
   app.addHook('onRequest', async (request, reply) => {
     reply.header('X-Content-Type-Options', 'nosniff').header('Referrer-Policy', 'strict-origin-when-cross-origin').header('X-Frame-Options', 'SAMEORIGIN');
     if (production) reply.header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'");
     if (request.url.startsWith('/api/v1/admin')) reply.header('Cache-Control', 'no-store');
-    if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method) && request.headers.origin && !origins.includes(request.headers.origin)) return error(reply, 403, 'Origin is not allowed');
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method) && request.headers.origin && !origins.has(request.headers.origin)) return error(reply, 403, 'Origin is not allowed');
     if (request.url.startsWith('/api/v1/admin') && !request.url.startsWith('/api/v1/admin/auth/')) {
       const session = authenticate(db, request); if (!session) return error(reply, 401, 'Please sign in');
       request.session = session;

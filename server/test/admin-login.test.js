@@ -27,14 +27,20 @@ for (const existing of [false, true]) {
     assert.equal(owner[0].username, 'admin');
     assert.notEqual(owner[0].password, 'admin@123');
     if (existing) assert.equal(owner[0].email, 'owner@example.test');
-    const login = password => app.inject({ method: 'POST', url: '/api/v1/admin/auth/login', payload: { username: 'admin', password } });
+    const origin = 'https://deepskyblue-okapi-398996.hostingersite.com';
+    const login = password => app.inject({ method: 'POST', url: '/api/v1/admin/auth/login', headers: { origin }, payload: { username: 'admin', password } });
+    for (const untrusted of ['https://untrusted.example', `${origin}.evil.example`, 'null']) {
+      const blocked = await app.inject({ method: 'POST', url: '/api/v1/admin/auth/login', headers: { origin: untrusted, host: new URL(untrusted === 'null' ? origin : untrusted).host, 'x-forwarded-host': new URL(origin).host }, payload: { username: 'admin', password: 'admin@123' } });
+      assert.equal(blocked.statusCode, 403);
+      assert.equal(blocked.json().error, 'Origin is not allowed');
+    }
     assert.equal((await login('wrong')).statusCode, 401);
     const response = await login('admin@123');
     assert.equal(response.statusCode, 200);
     assert.equal(response.json().username, 'admin');
     assert.match(response.headers['set-cookie'], /Secure/);
     const cookie = response.headers['set-cookie'].split(';')[0];
-    const changed = await app.inject({ method: 'POST', url: '/api/v1/admin/auth/password', headers: { cookie, 'x-csrf-token': response.json().csrf }, payload: { currentPassword: 'admin@123', password: 'new-demo-password-123' } });
+    const changed = await app.inject({ method: 'POST', url: '/api/v1/admin/auth/password', headers: { origin, cookie, 'x-csrf-token': response.json().csrf }, payload: { currentPassword: 'admin@123', password: 'new-demo-password-123' } });
     assert.equal(changed.statusCode, 200);
     assert.equal(await seedDemoAdmin(app.db), false);
     assert.equal((await login('admin@123')).statusCode, 401);
